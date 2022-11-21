@@ -4,15 +4,35 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  [Header("Movement | Adjustable variables")]
+  public float movementSpeed = 10f;
+  //public float mouseSensitivity = 100f;
+  //public float jumpStrength = 3f;
+  public bool HasKey = false;
+  public bool FirstPersonControlls = true;
+  public bool IsUnderwater = false;
+  public bool IsDetected = false;
+  public bool IsDisabled = false;
+
+  public void PickUpKey()
+  {
+    HasKey = true;
+  }
+
+  public void DropKey()
+  {
+    HasKey = false;
+  }
+
+  public void SetFirstPersonControlls(bool isFirstPerson)
+  {
+    FirstPersonControlls = isFirstPerson;
+  }
+
+  public void SetDetected(bool hasBeenDetected)
+  {
+    IsDetected = hasBeenDetected;
+    if (IsDetected == true) DropKey();
+  }
 }
