@@ -7,8 +7,8 @@ public class PlayerStats : MonoBehaviour
 
   [Header("Movement | Adjustable variables")]
   public float movementSpeed = 10f;
-  //public float mouseSensitivity = 100f;
-  //public float jumpStrength = 3f;
+  public float mouseSensitivity = 100f;
+  public float jumpStrength = 3f;
   public bool HasKey = false;
   public bool FirstPersonControlls = true;
   public bool IsUnderwater = false;
