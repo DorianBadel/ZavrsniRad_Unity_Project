@@ -37,6 +37,8 @@ public class DetectPlayer : MonoBehaviour
     {
       //If this part of the game is relevant
       LookForPlayer();
+      lamp.range = detectionRange;
+      lamp.innerSpotAngle = detectionAngle;
     }
 
   }
