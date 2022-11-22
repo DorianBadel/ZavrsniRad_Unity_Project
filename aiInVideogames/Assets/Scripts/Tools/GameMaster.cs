@@ -107,7 +107,7 @@ public class GameMaster : MonoBehaviour
     player.transform.position = mazeRespawnPoint.position;
     yield return new WaitForSeconds(0.1f);
     playerStats.SetDetected(false);
-    mazeKey.SendMessage("RespawnKey");
+    mazeKey.GetComponent<MazeKey>().RespawnKey();
     TopDownMazeCamera();
     //TODO Remove hasKey, respawn the key if it was picked up
   }

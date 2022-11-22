@@ -31,6 +31,14 @@ public class DetectPlayer : MonoBehaviour
       //Rotate towards player if he is detected
       Quaternion targetRot = Quaternion.LookRotation(player.transform.position - this.transform.position);
       this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, targetRot, 30f * Time.deltaTime);
+
+      lamp.color = Color.red;
+      InvokeRepeating("FlickerLampToLight", 1f, 0.4f);
+      InvokeRepeating("FlickerLampToDark", 1.3f, 0.4f);
+    }
+    else
+    {
+      CancelInvoke(); lamp.color = Color.white;
     }
 
     if (gameMaster.mazeEnemiesMove)
@@ -63,12 +71,8 @@ public class DetectPlayer : MonoBehaviour
         gameMaster.PlayerDetected();
 
         //Just for visuals
-        lamp.color = Color.red;
-        InvokeRepeating("FlickerLampToLight", 1f, 0.4f);
-        InvokeRepeating("FlickerLampToDark", 1.3f, 0.4f);
       }
     }
-    else lamp.color = Color.white;
   }
 
   private void FlickerLampToLight()
