@@ -10,6 +10,7 @@ public class Hiding : MonoBehaviour
   private GameObject player;
   private GameMaster gameMaster;
   private PlayerStats playerStats;
+  private static GameObject[] obstacles;
 
   [Header("Requirements")]
   public Transform startingLocation;
@@ -24,6 +25,7 @@ public class Hiding : MonoBehaviour
 
   void Start()
   {
+    obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
     this.transform.position = startingLocation.position;
     player = GameObject.FindGameObjectWithTag("Player");
     gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
@@ -50,7 +52,7 @@ public class Hiding : MonoBehaviour
     }
 
 
-    if(gameMaster.keyShouldHide && CanSeeTarget())
+    if(gameMaster.keyShouldHide /*&& CanSeeTarget()*/)
       Hide();
   }
 
@@ -95,13 +97,12 @@ public class Hiding : MonoBehaviour
 
     float minDistance = Mathf.Infinity;
     Vector3 closestHidingSpot = Vector3.zero;
-    GameObject[] obstacles = FindAllObstacles.World.GetObstacles();
 
     for(int i = 0; i < obstacles.Length; i++){
       Vector3 obstacleDistance = obstacles[i].transform.position - player.transform.position;
       Vector3 hidingSpotPosition = obstacles[i].transform.position + obstacleDistance.normalized * hidingDistance;
 
-      float distanceToObstacle = Vector3.Distance(this.transform.position, obstacles[i].transform.position)+3f;
+      float distanceToObstacle = Vector3.Distance(this.transform.position, obstacles[i].transform.position)+hidingDistance;
       float playersDistanceToObstacle = Vector3.Distance(player.transform.position, obstacles[i].transform.position);
 
       if(Vector3.Distance(this.transform.position, hidingSpotPosition) < minDistance &&  distanceToObstacle < playersDistanceToObstacle ){
@@ -114,7 +115,45 @@ public class Hiding : MonoBehaviour
 
   }
 
-  bool CanSeeTarget(){
+/* THIS CODE IS NOT TESTED
+  private Vector3 FindClosestHidingSpotUsingKNN() {
+    int k = 3; // number of nearest neighbors
+    List<Vector3> hidingSpots = new List<Vector3>();
+    List<float> distances = new List<float>();
+
+    for (int i = 0; i < obstacles.Length; i++) {
+        Vector3 obstacleDistance = obstacles[i].transform.position - player.transform.position;
+        Vector3 hidingSpotPosition = obstacles[i].transform.position + obstacleDistance.normalized * hidingDistance;
+        hidingSpots.Add(hidingSpotPosition);
+        distances.Add(Vector3.Distance(this.transform.position, hidingSpotPosition));
+    }
+
+    List<int> closestIndices = GetKNearestIndices(distances, k);
+    Vector3 closestHidingSpot = Vector3.zero;
+    float minDistance = Mathf.Infinity;
+    for (int i = 0; i < closestIndices.Count; i++) {
+        int index = closestIndices[i];
+        float distanceToObstacle = Vector3.Distance(this.transform.position, obstacles[index].transform.position) + hidingDistance;
+        float playersDistanceToObstacle = Vector3.Distance(player.transform.position, obstacles[index].transform.position);
+        if (distances[index] < minDistance && distanceToObstacle < playersDistanceToObstacle) {
+            closestHidingSpot = hidingSpots[index];
+            minDistance = distances[index];
+        }
+    }
+
+    return closestHidingSpot;
+}
+
+private List<int> GetKNearestIndices(List<float> distances, int k) {
+    List<int> indices = Enumerable.Range(0, distances.Count).ToList();
+    indices.Sort((a, b) => distances[a].CompareTo(distances[b]));
+    return indices.GetRange(0, k);
+}
+
+*/
+
+
+  /*bool CanSeeTarget(){
     RaycastHit rayHit;
     Vector3 distanceToPlayer = player.transform.position - this.transform.position;
 
@@ -123,5 +162,5 @@ public class Hiding : MonoBehaviour
         return true;
     }
     return false;
-  }
+  }*/
 }
