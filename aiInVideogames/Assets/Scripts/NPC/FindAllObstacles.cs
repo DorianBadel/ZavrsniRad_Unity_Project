@@ -4,21 +4,18 @@ using UnityEngine;
 
 public sealed class FindAllObstacles
 {
-    private static readonly FindAllObstacles world = new FindAllObstacles();
-    private static GameObject[] obstacles;
-
-    static FindAllObstacles(){
-      obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
-    }
+    private static GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+    private static readonly FindAllObstacles instance = new FindAllObstacles();
 
     private FindAllObstacles(){}
-    public GameObject[] GetObstacles(){
-      return obstacles;
+
+    public static FindAllObstacles Instance
+    {
+        get { return instance; }
     }
 
-    public static FindAllObstacles World{
-      get {return world;}
+    public GameObject[] GetObstacles()
+    {
+        return obstacles;
     }
-
-
 }
