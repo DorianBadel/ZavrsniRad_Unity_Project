@@ -1,0 +1,51 @@
+public sealed class PlayerStats
+{
+    private static readonly PlayerStats instance = new PlayerStats();
+
+    public float MovementSpeed { get; set; } = 10f;
+    public float MouseSensitivity { get; set; } = 100f;
+    public float JumpStrength { get; set; } = 3f;
+    public bool HasKey { get; set; } = false;
+    public bool FirstPersonControlls { get; set; } = true;
+    public bool IsUnderwater { get; set; } = false;
+    public bool IsDetected { get; set; } = false;
+    public bool IsDisabled { get; set; } = false;
+
+    private PlayerStats()
+    {
+        MovementSpeed = 10f;
+        MouseSensitivity = 100f;
+        JumpStrength = 3f;
+        HasKey = false;
+        FirstPersonControlls = true;
+        IsUnderwater = false;
+        IsDetected = false;
+        IsDisabled = false;
+    }
+
+    public static PlayerStats Instance
+    {
+        get { return instance; }
+    }
+
+    public void PickUpKey()
+    {
+        HasKey = true;
+    }
+
+    public void DropKey()
+    {
+        HasKey = false;
+    }
+
+    public void SetFirstPersonControlls(bool isFirstPerson)
+    {
+        FirstPersonControlls = isFirstPerson;
+    }
+
+    public void SetDetected(bool hasBeenDetected)
+    {
+        IsDetected = hasBeenDetected;
+        if (IsDetected == true) DropKey();
+    }
+}
