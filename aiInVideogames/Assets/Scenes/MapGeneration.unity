@@ -430,7 +430,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1875844605}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &548022177
 MonoBehaviour:
@@ -457,10 +457,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3200ecaeb45cbe945adb5941930816b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
-  noiseScale: 3
+  drawMode: 1
+  width: 100
+  height: 100
+  noiseScale: 18.11
+  octaves: 3
+  persistance: 0.361
+  lacunarity: 1
+  seed: 7
+  offset: {x: 6.82, y: 7.06}
   autoUpdate: 1
+  regions:
+  - terrainName: Deep
+    height: 0.1
+    colour: {r: 0.23137254, g: 0.36187682, b: 0.7058824, a: 0}
+  - terrainName: Water
+    height: 0.3
+    colour: {r: 0.20392156, g: 0.57357615, b: 0.7647059, a: 0}
+  - terrainName: Shallows
+    height: 0.4
+    colour: {r: 0.20545568, g: 0.6094662, b: 0.764151, a: 0}
+  - terrainName: Sand
+    height: 0.45
+    colour: {r: 0.734723, g: 0.7924528, b: 0.28034887, a: 0}
+  - terrainName: Land
+    height: 0.55
+    colour: {r: 0.2555424, g: 0.7075472, b: 0.23028658, a: 0}
+  - terrainName: Hill
+    height: 0.7
+    colour: {r: 0.14478955, g: 0.5377358, b: 0.12428801, a: 0}
+  - terrainName: Mountain
+    height: 0.75
+    colour: {r: 0.38679248, g: 0.3160041, b: 0.21711464, a: 1}
+  - terrainName: Mountain
+    height: 0.95
+    colour: {r: 0.3490566, g: 0.27967936, b: 0.17946778, a: 0}
+  - terrainName: Mountain
+    height: 1
+    colour: {r: 1, g: 1, b: 1, a: 0}
 --- !u!1 &750876916
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,11 +522,11 @@ Transform:
   m_GameObject: {fileID: 750876916}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_LocalScale: {x: 100, y: 1, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1875844605}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &750876918
 MeshRenderer:
@@ -873,9 +907,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 466561706}
   - {fileID: 548022176}
   - {fileID: 750876917}
+  - {fileID: 466561706}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
