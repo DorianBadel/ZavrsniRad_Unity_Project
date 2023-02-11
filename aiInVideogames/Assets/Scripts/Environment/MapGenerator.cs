@@ -8,7 +8,9 @@ public class MapGenerator : MonoBehaviour
   public enum DrawMode
   {
     NoiseMap,
-    ColourMap
+    ColourMap,
+    MeshMap,
+    FalloffMap
   }
 
   public DrawMode drawMode;
@@ -24,8 +26,20 @@ public class MapGenerator : MonoBehaviour
   public int seed;
   public Vector2 offset;
 
+  public bool useFalloff;
+
+  public float meshHeightMultiplier;
+  public AnimationCurve meshHeightCurve;
+
   public bool autoUpdate;
   public TerrainType[] regions;
+
+  float[,] falloffMap;
+
+  void Awake()
+  {
+    falloffMap = FalloffGenerator.GenerateFalloffMap(width);
+  }
 
   public void GenerateMap()
   {
@@ -36,6 +50,10 @@ public class MapGenerator : MonoBehaviour
     {
       for (int x = 0; x < width; x++)
       {
+        if (useFalloff)
+        {
+          noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
+        }
         float currentHeight = noiseMap[x, y];
         for (int i = 0; i < regions.Length; i++)
         {
@@ -58,6 +76,14 @@ public class MapGenerator : MonoBehaviour
       display.DrawTexture(TextureGenerator.TextureFromColourMap(colourMap, width, height));
 
     }
+    else if (drawMode == DrawMode.MeshMap)
+    {
+      display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColourMap(colourMap, width, height));
+    }
+    else if (drawMode == DrawMode.FalloffMap)
+    {
+      display.DrawTexture(TextureGenerator.TextureFromHeightMap(falloffMap));
+    }
 
   }
 
@@ -69,6 +95,8 @@ public class MapGenerator : MonoBehaviour
     if (lacunarity < 1) lacunarity = 1;
     if (octaves < 0) octaves = 0;
     if (octaves > 100) octaves = 100;
+
+    falloffMap = FalloffGenerator.GenerateFalloffMap(width);
   }
 }
 [System.Serializable]
