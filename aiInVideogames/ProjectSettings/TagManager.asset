@@ -6,6 +6,8 @@ TagManager:
   tags:
   - MazeKey
   - Obstacle
+  - Deposit
+  - Ore
   layers:
   - Default
   - TransparentFX
@@ -13,9 +15,9 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Unit
+  - Deposit
+  - Crystal
   - 
   - 
   - 
