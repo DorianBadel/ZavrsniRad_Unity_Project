@@ -57,10 +57,10 @@ public class SelectUnits : MonoBehaviour
 
         switch (layerHit.value)
         {
-          case 7:
+          case 8:
             UnitsStartMining(hit.point);
             break;
-          case 8:
+          case 7:
             UnitsDeposit(hit.point);
             break;
           default:
