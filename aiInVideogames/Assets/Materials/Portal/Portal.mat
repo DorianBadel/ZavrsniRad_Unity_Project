@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Portal
-  m_Shader: {fileID: -6465566751694194690, guid: e00695b7db9ef8f4dbaf591650cf1530,
+  m_Shader: {fileID: -6465566751694194690, guid: 0069e5cc5709fe14db694611ca9be22f,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
