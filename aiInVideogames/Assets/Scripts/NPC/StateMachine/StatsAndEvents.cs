@@ -19,7 +19,8 @@ namespace FSM
     {
       CommandToMine,
       CommandToMove,
-      CommandToDeposit
+      CommandToDeposit,
+      CommandToIdle
     }
   }
 

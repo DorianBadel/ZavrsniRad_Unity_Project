@@ -40,41 +40,78 @@ public class RTSBots : MonoBehaviour
 
   void Update()
   {
-    if (stateMachine.currentState == StatsAndEvents.States.Mining)
+    switch (stateMachine.currentState)
     {
-      if (Vector3.Distance(this.transform.position, ores[0].transform.position) < minDist)
-      {
-        if (currentLoad < maxLoad)
+      case StatsAndEvents.States.Mining:
+        if (ores[0] != null && GetDistanceToClosestVertex(ores[0], this.transform.position) < minDist)
         {
-          Mine();
+          if (currentLoad < maxLoad)
+          {
+            Mine();
+          }
+          else
+          {
+            goDeposit();
+          }
         }
-        else goDeposit();
-      }
-    }
-
-
-    if (stateMachine.currentState == StatsAndEvents.States.Depositing)
-    {
-      if (Vector3.Distance(this.transform.position,
-      deposits[0].transform.position) < minDist)
-      {
-        if (currentLoad > 0)
+        else if (ores[0] == null)
         {
-          Deposit();
+          stateMachine.makeTransition(StatsAndEvents.Event.CommandToIdle);
         }
-        else if (wantsToMine) goMine();
-        else HideEffects();
-      }
-    }
+        break;
 
-    if (stateMachine.currentState == StatsAndEvents.States.Moving || stateMachine.currentState == StatsAndEvents.States.Idle)
-    {
-      HideEffects();
+      case StatsAndEvents.States.Depositing:
+        if (deposits[0].GetComponent<DepositScript>().hasRoom() && GetDistanceToClosestVertex(deposits[0], this.transform.position) < minDist)
+        {
+          if (currentLoad > 0)
+          {
+            Deposit();
+          }
+          else if (wantsToMine)
+          {
+            goMine();
+          }
+          else
+          {
+            HideEffects();
+          }
+        }
+        else if (!deposits[0].GetComponent<DepositScript>().hasRoom())
+        {
+          stateMachine.makeTransition(StatsAndEvents.Event.CommandToIdle);
+        }
+        break;
+
+      case StatsAndEvents.States.Moving:
+      case StatsAndEvents.States.Idle:
+        { target = this.transform.position; HideEffects(); }
+        break;
+
+      default:
+        // handle unexpected state
+        break;
     }
 
     agent.SetDestination(target);
-
   }
+
+  float GetDistanceToClosestVertex(GameObject obj, Vector3 targetPosition)
+  {
+    Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
+    Vector3[] vertices = mesh.vertices;
+    float minDistance = float.MaxValue;
+    foreach (Vector3 vertex in vertices)
+    {
+      Vector3 worldVertex = obj.transform.TransformPoint(vertex);
+      float distance = Vector3.Distance(worldVertex, targetPosition);
+      if (distance < minDistance)
+      {
+        minDistance = distance;
+      }
+    }
+    return minDistance;
+  }
+
 
   private void SetGoal(Vector3 goal)
   {
@@ -83,13 +120,13 @@ public class RTSBots : MonoBehaviour
 
   private void Mine()
   {
-    Debug.Log("Im Mining");
+    // Debug.Log("Im Mining");
     if (!digging) StartCoroutine(Dig());
   }
 
   private void Deposit()
   {
-    Debug.Log("Im Depositing");
+    // Debug.Log("Im Depositing");
     if (!dropping) StartCoroutine(Drop());
   }
 
@@ -167,7 +204,14 @@ public class RTSBots : MonoBehaviour
     ShowMining();
     yield return new WaitForSeconds(1);
     if (currentLoad < maxLoad)
-      currentLoad++;
+    {
+      OreScript ore = ores[0].GetComponent<OreScript>();
+      if (ore != null)
+      {
+        ore.Mine();
+        currentLoad++;
+      }
+    }
     digging = false;
   }
 
@@ -177,7 +221,14 @@ public class RTSBots : MonoBehaviour
     ShowDepositing();
     yield return new WaitForSeconds(1);
     if (currentLoad > 0)
-      currentLoad--;
+    {
+      DepositScript deposit = deposits[0].GetComponent<DepositScript>();
+      if (deposit.hasRoom())
+      {
+        deposit.Deposit();
+        currentLoad--;
+      }
+    }
     dropping = false;
   }
 }
