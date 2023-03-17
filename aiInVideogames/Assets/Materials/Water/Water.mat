@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Water
-  m_Shader: {fileID: -6465566751694194690, guid: e5780b5232ec251409307367259ef5ce,
+  m_Shader: {fileID: -6465566751694194690, guid: 9a810f703513b854f9e966d021ab1516,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -38,12 +38,12 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Density: {r: 3, g: 3, b: 0, a: 0}
+    - _Density: {r: 18.8, g: 3, b: 0, a: 0}
     - _Randomness: {r: 1, g: 0, b: 0, a: 0}
     - _Water: {r: 0.172549, g: 0.7058824, b: 1.341177, a: 0}
     - _Water_accent: {r: 0.19999996, g: 0.4520831, b: 0.8588235, a: 0}
     - _Wave_Speed: {r: 0.1, g: 0, b: 0, a: 0}
-    - _Wave_height: {r: 1, g: 1, b: 0, a: 0}
+    - _Wave_height: {r: 5, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5431179842676987800
 MonoBehaviour:
