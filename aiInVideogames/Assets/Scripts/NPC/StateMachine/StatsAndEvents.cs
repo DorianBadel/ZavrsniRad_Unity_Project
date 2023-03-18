@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FSM
 {
 
-  public class StatsAndEvents : MonoBehaviour
+  public class StatesAndEvents : MonoBehaviour
   {
     public enum States
     {

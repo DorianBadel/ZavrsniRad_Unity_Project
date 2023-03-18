@@ -42,7 +42,7 @@ public class RTSBots : MonoBehaviour
   {
     switch (stateMachine.currentState)
     {
-      case StatsAndEvents.States.Mining:
+      case StatesAndEvents.States.Mining:
         if (ores[0] != null && GetDistanceToClosestVertex(ores[0], this.transform.position) < minDist)
         {
           if (currentLoad < maxLoad)
@@ -56,11 +56,11 @@ public class RTSBots : MonoBehaviour
         }
         else if (ores[0] == null)
         {
-          stateMachine.makeTransition(StatsAndEvents.Event.CommandToIdle);
+          stateMachine.makeTransition(StatesAndEvents.Event.CommandToIdle);
         }
         break;
 
-      case StatsAndEvents.States.Depositing:
+      case StatesAndEvents.States.Depositing:
         if (deposits[0].GetComponent<DepositScript>().hasRoom() && GetDistanceToClosestVertex(deposits[0], this.transform.position) < minDist)
         {
           if (currentLoad > 0)
@@ -78,12 +78,12 @@ public class RTSBots : MonoBehaviour
         }
         else if (!deposits[0].GetComponent<DepositScript>().hasRoom())
         {
-          stateMachine.makeTransition(StatsAndEvents.Event.CommandToIdle);
+          stateMachine.makeTransition(StatesAndEvents.Event.CommandToIdle);
         }
         break;
 
-      case StatsAndEvents.States.Moving:
-      case StatsAndEvents.States.Idle:
+      case StatesAndEvents.States.Moving:
+      case StatesAndEvents.States.Idle:
         { target = this.transform.position; HideEffects(); }
         break;
 
@@ -134,14 +134,14 @@ public class RTSBots : MonoBehaviour
   {
     wantsToMine = true;
     HideEffects();
-    stateMachine.makeTransition(StatsAndEvents.Event.CommandToDeposit);
+    stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
     target = deposits[0].transform.position;
   }
 
   private void goMine()
   {
     HideEffects();
-    stateMachine.makeTransition(StatsAndEvents.Event.CommandToMine);
+    stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
     target = ores[0].transform.position;
   }
 
@@ -150,7 +150,7 @@ public class RTSBots : MonoBehaviour
   public void MoveHere(Vector3 goal)
   {
     SetGoal(goal);
-    stateMachine.makeTransition(StatsAndEvents.Event.CommandToMove);
+    stateMachine.makeTransition(StatesAndEvents.Event.CommandToMove);
     wantsToMine = false;
   }
 
@@ -158,7 +158,7 @@ public class RTSBots : MonoBehaviour
   {
     if (currentLoad < maxLoad)
     {
-      stateMachine.makeTransition(StatsAndEvents.Event.CommandToMine);
+      stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
       SetGoal(goal);
     }
     else
@@ -171,7 +171,7 @@ public class RTSBots : MonoBehaviour
   {
     if (currentLoad > 0)
     {
-      stateMachine.makeTransition(StatsAndEvents.Event.CommandToDeposit);
+      stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
       wantsToMine = false;
       SetGoal(goal);
     }
