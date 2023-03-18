@@ -7,29 +7,29 @@ namespace FSM
 
   public class StateMachine
   {
-    public StatsAndEvents.States currentState { get; set; }
+    public StatesAndEvents.States currentState { get; set; }
 
     public StateMachine()
     {
-      currentState = StatsAndEvents.States.Idle;
+      currentState = StatesAndEvents.States.Idle;
       Debug.Log("initiated");
     }
 
-    public void makeTransition(StatsAndEvents.Event trigger)
+    public void makeTransition(StatesAndEvents.Event trigger)
     {
       switch (trigger)
       {
-        case StatsAndEvents.Event.CommandToMine:
-          currentState = StatsAndEvents.States.Mining;
+        case StatesAndEvents.Event.CommandToMine:
+          currentState = StatesAndEvents.States.Mining;
           break;
-        case StatsAndEvents.Event.CommandToDeposit:
-          currentState = StatsAndEvents.States.Depositing;
+        case StatesAndEvents.Event.CommandToDeposit:
+          currentState = StatesAndEvents.States.Depositing;
           break;
-        case StatsAndEvents.Event.CommandToMove:
-          currentState = StatsAndEvents.States.Moving;
+        case StatesAndEvents.Event.CommandToMove:
+          currentState = StatesAndEvents.States.Moving;
           break;
-        case StatsAndEvents.Event.CommandToIdle:
-          currentState = StatsAndEvents.States.Idle;
+        case StatesAndEvents.Event.CommandToIdle:
+          currentState = StatesAndEvents.States.Idle;
           break;
       }
     }

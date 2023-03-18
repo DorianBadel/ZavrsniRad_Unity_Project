@@ -19,57 +19,58 @@ public class SelectUnits : MonoBehaviour
 
   void Update()
   {
-    HandleUnitSelection();
+    if (Input.GetMouseButtonDown(0))
+    {
+      HandleUnitSelection();
+    }
+    if (Input.GetMouseButtonDown(1))
+    {
+      HandleUnitCommand();
+    }
   }
 
   private void HandleUnitSelection()
   {
-    if (Input.GetMouseButtonDown(0))
+    MousePosition = Input.mousePosition;
+
+    Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
+    if (Physics.Raycast(ray, out hit))
     {
-      MousePosition = Input.mousePosition;
+      LayerMask layerHit = hit.transform.gameObject.layer;
 
-      Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
-      if (Physics.Raycast(ray, out hit))
+      switch (layerHit.value)
       {
-        LayerMask layerHit = hit.transform.gameObject.layer;
-
-        switch (layerHit.value)
-        {
-          case 6: //units
-            SelectUnit(hit.transform.gameObject, Input.GetKey(KeyCode.LeftShift));
-            break;
-          default:
-            //selecting = true;
-            DeselectUnits();
-            break;
-        }
+        case 6: //units
+          SelectUnit(hit.transform.gameObject, Input.GetKey(KeyCode.LeftShift));
+          break;
+        default:
+          DeselectUnits();
+          break;
       }
     }
+  }
 
-    if (Input.GetMouseButtonDown(1))
+  private void HandleUnitCommand()
+  {
+    MousePosition = Input.mousePosition;
+
+    Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
+    if (Physics.Raycast(ray, out hit))
     {
-      MousePosition = Input.mousePosition;
+      LayerMask layerHit = hit.transform.gameObject.layer;
 
-      Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
-      if (Physics.Raycast(ray, out hit))
+      switch (layerHit.value)
       {
-        LayerMask layerHit = hit.transform.gameObject.layer;
-
-        switch (layerHit.value)
-        {
-          case 8:
-            UnitsStartMining(hit.point);
-            break;
-          case 7:
-            UnitsDeposit(hit.point);
-            break;
-          default:
-            MoveUnits(hit.point);
-            break;
-        }
-
+        case 7: //Deposits
+          UnitsDeposit(hit.point);
+          break;
+        case 8: //Ore
+          UnitsStartMining(hit.point);
+          break;
+        default:
+          MoveUnits(hit.point);
+          break;
       }
-
     }
   }
 
