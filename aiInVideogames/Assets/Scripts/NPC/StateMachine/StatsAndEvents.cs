@@ -20,7 +20,9 @@ namespace FSM
       CommandToMine,
       CommandToMove,
       CommandToDeposit,
-      CommandToIdle
+      ReturnToIdle,
+      InventoryFull,
+      InventoryEmpty
     }
   }
 
