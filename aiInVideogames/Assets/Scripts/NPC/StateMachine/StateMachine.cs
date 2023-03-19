@@ -28,8 +28,14 @@ namespace FSM
         case StatesAndEvents.Event.CommandToMove:
           currentState = StatesAndEvents.States.Moving;
           break;
-        case StatesAndEvents.Event.CommandToIdle:
+        case StatesAndEvents.Event.ReturnToIdle:
           currentState = StatesAndEvents.States.Idle;
+          break;
+        case StatesAndEvents.Event.InventoryFull:
+          currentState = StatesAndEvents.States.Depositing;
+          break;
+        case StatesAndEvents.Event.InventoryEmpty:
+          currentState = StatesAndEvents.States.Mining;
           break;
       }
     }

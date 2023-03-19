@@ -29,8 +29,13 @@ public class OreScript : MonoBehaviour
 
   public void Mine()
   {
-    if (currentAmount == 1) Destroy(gameObject);
-    currentAmount--;
+    if (currentAmount > 0) currentAmount--;
     UpdateVisual();
+  }
+
+  public bool hasOre()
+  {
+    if (currentAmount == 0) return false;
+    return true;
   }
 }

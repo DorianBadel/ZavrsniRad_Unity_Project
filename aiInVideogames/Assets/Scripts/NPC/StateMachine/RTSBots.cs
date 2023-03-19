@@ -11,8 +11,10 @@ public class RTSBots : MonoBehaviour
   [Header("GeneralAI")]
   public Vector3 target;
   public UnityEngine.AI.NavMeshAgent agent;
-  public GameObject[] deposits;
-  public GameObject[] ores;
+  public GameObject deposit;
+  private DepositScript depositStats;
+  private OreScript oreStats;
+  public GameObject ore;
 
   [Header("Stats")]
   public int currentLoad = 0;
@@ -34,40 +36,50 @@ public class RTSBots : MonoBehaviour
   void Start()
   {
     target = transform.position;
-    deposits = GameObject.FindGameObjectsWithTag("Deposit");
-    ores = GameObject.FindGameObjectsWithTag("Ore");
+    deposit = GameObject.FindGameObjectWithTag("Deposit");
+    ore = GameObject.FindGameObjectWithTag("Ore");
+    depositStats = deposit.GetComponent<DepositScript>();
+    oreStats = ore.GetComponent<OreScript>();
   }
 
   void Update()
   {
+    colorSwap();
+    if (!oreStats.hasOre()) ore = null;
     switch (stateMachine.currentState)
     {
       case StatesAndEvents.States.Mining:
-        if (ores[0] != null && GetDistanceToClosestVertex(ores[0], this.transform.position) < minDist)
+        if (ore == null)
+        {
+          stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
+          break;
+        }
+        if (GetDistanceToClosestVertex(ore, this.transform.position) < minDist)
         {
           if (currentLoad < maxLoad)
           {
             Mine();
           }
-          else
+          else if (depositStats.hasRoom())
           {
             goDeposit();
           }
         }
-        else if (ores[0] == null)
-        {
-          stateMachine.makeTransition(StatesAndEvents.Event.CommandToIdle);
-        }
         break;
 
       case StatesAndEvents.States.Depositing:
-        if (deposits[0].GetComponent<DepositScript>().hasRoom() && GetDistanceToClosestVertex(deposits[0], this.transform.position) < minDist)
+        if (!depositStats.hasRoom())
+        {
+          stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
+          break;
+        }
+        if (GetDistanceToClosestVertex(deposit, this.transform.position) < minDist)
         {
           if (currentLoad > 0)
           {
             Deposit();
           }
-          else if (wantsToMine)
+          else if (wantsToMine && ore != null)
           {
             goMine();
           }
@@ -76,19 +88,17 @@ public class RTSBots : MonoBehaviour
             HideEffects();
           }
         }
-        else if (!deposits[0].GetComponent<DepositScript>().hasRoom())
-        {
-          stateMachine.makeTransition(StatesAndEvents.Event.CommandToIdle);
-        }
         break;
 
       case StatesAndEvents.States.Moving:
+        HideEffects();
+        break;
       case StatesAndEvents.States.Idle:
         { target = this.transform.position; HideEffects(); }
         break;
 
       default:
-        // handle unexpected state
+        stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
         break;
     }
 
@@ -120,13 +130,11 @@ public class RTSBots : MonoBehaviour
 
   private void Mine()
   {
-    // Debug.Log("Im Mining");
     if (!digging) StartCoroutine(Dig());
   }
 
   private void Deposit()
   {
-    // Debug.Log("Im Depositing");
     if (!dropping) StartCoroutine(Drop());
   }
 
@@ -134,15 +142,15 @@ public class RTSBots : MonoBehaviour
   {
     wantsToMine = true;
     HideEffects();
-    stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
-    target = deposits[0].transform.position;
+    stateMachine.makeTransition(StatesAndEvents.Event.InventoryFull);
+    target = deposit.transform.position;
   }
 
   private void goMine()
   {
     HideEffects();
-    stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
-    target = ores[0].transform.position;
+    stateMachine.makeTransition(StatesAndEvents.Event.InventoryEmpty);
+    target = ore.transform.position;
   }
 
 
@@ -156,7 +164,7 @@ public class RTSBots : MonoBehaviour
 
   public void MineHere(Vector3 goal)
   {
-    if (currentLoad < maxLoad)
+    if (currentLoad < maxLoad && ore != null)
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
       SetGoal(goal);
@@ -169,7 +177,7 @@ public class RTSBots : MonoBehaviour
 
   public void DepositHere(Vector3 goal)
   {
-    if (currentLoad > 0)
+    if (currentLoad > 0 && depositStats.hasRoom())
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
       wantsToMine = false;
@@ -205,10 +213,9 @@ public class RTSBots : MonoBehaviour
     yield return new WaitForSeconds(1);
     if (currentLoad < maxLoad)
     {
-      OreScript ore = ores[0].GetComponent<OreScript>();
       if (ore != null)
       {
-        ore.Mine();
+        oreStats.Mine();
         currentLoad++;
       }
     }
@@ -222,13 +229,41 @@ public class RTSBots : MonoBehaviour
     yield return new WaitForSeconds(1);
     if (currentLoad > 0)
     {
-      DepositScript deposit = deposits[0].GetComponent<DepositScript>();
-      if (deposit.hasRoom())
+      if (depositStats.hasRoom())
       {
-        deposit.Deposit();
+        depositStats.Deposit();
         currentLoad--;
       }
     }
     dropping = false;
+  }
+
+  private void colorSwap()
+  {
+    Material renderer = GetComponent<Renderer>().material;
+    switch (stateMachine.currentState)
+    {
+      case StatesAndEvents.States.Mining:
+        Material pastelRed = new Material(Shader.Find("Standard"));
+        pastelRed.color = new Color(1f, 0.6f, 0.6f);
+        renderer.color = pastelRed.color;
+        break;
+
+      case StatesAndEvents.States.Depositing:
+        Material pastelGreen = new Material(Shader.Find("Standard"));
+        pastelGreen.color = new Color(0.6f, 1f, 0.6f);
+        renderer.color = pastelGreen.color;
+        break;
+      case StatesAndEvents.States.Idle:
+        Material pastelBlue = new Material(Shader.Find("Standard"));
+        pastelBlue.color = new Color(0.6f, 0.6f, 1f);
+        renderer.color = pastelBlue.color;
+        break;
+      case StatesAndEvents.States.Moving:
+        Material pastelYellow = new Material(Shader.Find("Standard"));
+        pastelYellow.color = new Color(1f, 1f, 0.6f);
+        renderer.color = pastelYellow.color;
+        break;
+    }
   }
 }
