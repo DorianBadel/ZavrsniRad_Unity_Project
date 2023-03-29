@@ -37,6 +37,9 @@ namespace FSM
         case StatesAndEvents.Event.InventoryEmpty:
           currentState = StatesAndEvents.States.Mining;
           break;
+        case StatesAndEvents.Event.ReachedDestination:
+          currentState = StatesAndEvents.States.Idle;
+          break;
       }
     }
   }
