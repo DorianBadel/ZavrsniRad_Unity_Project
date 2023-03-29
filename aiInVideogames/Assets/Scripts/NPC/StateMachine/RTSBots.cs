@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FSM;
-
-//TODO make AI stop at a distance from mine
 //TODO make effects point to mine
 public class RTSBots : MonoBehaviour
 {
@@ -56,6 +54,7 @@ public class RTSBots : MonoBehaviour
         }
         if (GetDistanceToClosestVertex(ore, this.transform.position) < minDist)
         {
+          CheckDistanceTo(ore);
           if (currentLoad < maxLoad)
           {
             Mine();
@@ -75,6 +74,7 @@ public class RTSBots : MonoBehaviour
         }
         if (GetDistanceToClosestVertex(deposit, this.transform.position) < minDist)
         {
+          CheckDistanceTo(deposit);
           if (currentLoad > 0)
           {
             Deposit();
@@ -92,6 +92,7 @@ public class RTSBots : MonoBehaviour
 
       case StatesAndEvents.States.Moving:
         HideEffects();
+        if (Vector3.Distance(this.transform.position, target) < minDist) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
         break;
       case StatesAndEvents.States.Idle:
         { target = this.transform.position; HideEffects(); }
@@ -103,6 +104,14 @@ public class RTSBots : MonoBehaviour
     }
 
     agent.SetDestination(target);
+  }
+
+  void CheckDistanceTo(GameObject goal)
+  {
+    if (GetDistanceToClosestVertex(goal, this.transform.position) < minDist - 1)
+    {
+      target = this.transform.position;
+    }
   }
 
   float GetDistanceToClosestVertex(GameObject obj, Vector3 targetPosition)
@@ -121,7 +130,6 @@ public class RTSBots : MonoBehaviour
     }
     return minDistance;
   }
-
 
   private void SetGoal(Vector3 goal)
   {
@@ -189,20 +197,6 @@ public class RTSBots : MonoBehaviour
     }
   }
 
-  //EFFECT CONTROLS
-  private void HideEffects()
-  {
-    this.transform.Find("Depositing_effect").gameObject.SetActive(false);
-    this.transform.Find("Mining_effect").gameObject.SetActive(false);
-  }
-  private void ShowMining()
-  {
-    this.transform.Find("Mining_effect").gameObject.SetActive(true);
-  }
-  private void ShowDepositing()
-  {
-    this.transform.Find("Depositing_effect").gameObject.SetActive(true);
-  }
 
   //Delay for mining and depositing
 
@@ -236,6 +230,21 @@ public class RTSBots : MonoBehaviour
       }
     }
     dropping = false;
+  }
+
+  //EFFECT CONTROLS
+  private void HideEffects()
+  {
+    this.transform.Find("Depositing_effect").gameObject.SetActive(false);
+    this.transform.Find("Mining_effect").gameObject.SetActive(false);
+  }
+  private void ShowMining()
+  {
+    this.transform.Find("Mining_effect").gameObject.SetActive(true);
+  }
+  private void ShowDepositing()
+  {
+    this.transform.Find("Depositing_effect").gameObject.SetActive(true);
   }
 
   private void colorSwap()

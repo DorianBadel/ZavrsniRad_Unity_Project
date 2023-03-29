@@ -22,7 +22,8 @@ namespace FSM
       CommandToDeposit,
       ReturnToIdle,
       InventoryFull,
-      InventoryEmpty
+      InventoryEmpty,
+      ReachedDestination
     }
   }
 
