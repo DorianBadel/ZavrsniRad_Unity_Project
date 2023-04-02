@@ -26,6 +26,7 @@ public class Boid : MonoBehaviour
     DebugRays();
     if (allBoids.Length > 0) FindFlock();
     Separation();
+    Alignment();
 
   }
   //Separation
@@ -47,6 +48,17 @@ public class Boid : MonoBehaviour
   }
 
   //Alignment
+  private void Alignment()
+  {
+    Vector3 averageHeading = Vector3.zero;
+    foreach (var fish in flock)
+    {
+      averageHeading += fish.transform.forward;
+    }
+    averageHeading /= flock.Count;
+    Vector3 direction = averageHeading - transform.position;
+    Debug.DrawRay(transform.position, direction, Color.blue);
+  }
 
   //Cohesion
 
