@@ -4,33 +4,34 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
-
-  public Boid[] allBoids;
+  //TODO
+  //Add a force towards a target
+  //Add a force away from walls
   public List<Boid> flock;
   public Vector3 calculatedDirection;
+
+  private Transform target = null;
 
   private FlockMaster FM;
   void Start()
   {
-    allBoids = FindObjectsOfType<Boid>();
     calculatedDirection = transform.forward;
     FM = GetComponentInParent<FlockMaster>();
+
+    if (FM.target != null) target = FM.target;
   }
 
   void Update()
   {
     calculatedDirection.Normalize();
-    if (allBoids.Length > 0) FindFlock();
+    if (FM.allBoids.Length > 0) FindFlock();
 
     //Apply the 3 rules of Boids
     Separation();
     Alignment();
     Cohesion();
 
-    Debug.DrawRay(transform.position, calculatedDirection, Color.magenta);
-
-    transform.position += calculatedDirection * Time.deltaTime;
-    transform.rotation = Quaternion.LookRotation(calculatedDirection);
+    Move();
 
   }
   //Separation
@@ -80,11 +81,28 @@ public class Boid : MonoBehaviour
     calculatedDirection += direction;
   }
 
+  private void Move()
+  {
+    Vector3 movingDirection = Vector3.zero;
+    if (target != null)
+    {
+      movingDirection = (target.position - transform.position).normalized * FM.targetPull;
+    }
+
+    movingDirection += calculatedDirection;
+
+    Debug.DrawRay(transform.position, movingDirection, Color.magenta);
+
+    transform.position += movingDirection * Time.deltaTime;
+    transform.rotation = Quaternion.LookRotation(movingDirection);
+
+  }
+
 
   private void FindFlock()
   {
     flock.Clear();
-    foreach (var fish in allBoids)
+    foreach (var fish in FM.allBoids)
     {
       if (fish != this && Vector3.Distance(transform.position, fish.transform.position) < FM.flockRange)
       {
