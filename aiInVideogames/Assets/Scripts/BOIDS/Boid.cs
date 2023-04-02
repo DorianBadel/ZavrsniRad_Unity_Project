@@ -31,6 +31,18 @@ public class Boid : MonoBehaviour
   //Separation
   private void Separation()
   {
+    //Average of all neighbours in flock
+    Vector3 averagePosition = Vector3.zero;
+    foreach (var fish in flock)
+    {
+      averagePosition += fish.transform.position;
+    }
+    averagePosition /= flock.Count;
+
+    //Move away from average position
+    Vector3 direction = transform.position - averagePosition;
+    Debug.DrawRay(transform.position, direction, Color.red);
+
 
   }
 
