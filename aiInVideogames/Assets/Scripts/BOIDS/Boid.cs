@@ -4,33 +4,25 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
-  public float flockRange = 5f;
 
   public Boid[] allBoids;
   public List<Boid> flock;
   public Vector3 calculatedDirection;
 
-  public float separationPull = 5f;
-  public float alignmentPull = 5f;
-  public float cohesionPull = 5f;
+  private FlockMaster FM;
   void Start()
   {
     allBoids = FindObjectsOfType<Boid>();
     calculatedDirection = transform.forward;
+    FM = GetComponentInParent<FlockMaster>();
   }
 
-
-  void Reset()
-  {
-    DebugRays();
-  }
-
-  // Update is called once per frame
   void Update()
   {
     calculatedDirection.Normalize();
-    DebugRays();
     if (allBoids.Length > 0) FindFlock();
+
+    //Apply the 3 rules of Boids
     Separation();
     Alignment();
     Cohesion();
@@ -44,7 +36,6 @@ public class Boid : MonoBehaviour
   //Separation
   private void Separation()
   {
-    //Average of all neighbours in flock
     Vector3 averagePosition = Vector3.zero;
     foreach (var fish in flock)
     {
@@ -52,8 +43,7 @@ public class Boid : MonoBehaviour
     }
     averagePosition /= flock.Count;
 
-    //Move away from average position
-    Vector3 direction = (transform.position - averagePosition).normalized * separationPull;
+    Vector3 direction = (transform.position - averagePosition).normalized * FM.separationPull;
     Debug.DrawRay(transform.position, direction, Color.red);
     calculatedDirection += direction;
 
@@ -69,7 +59,7 @@ public class Boid : MonoBehaviour
       averageHeading += fish.transform.forward;
     }
     averageHeading /= flock.Count;
-    Vector3 direction = (transform.forward + averageHeading).normalized * alignmentPull;
+    Vector3 direction = (transform.forward + averageHeading).normalized * FM.alignmentPull;
     Debug.DrawRay(transform.position, direction, Color.blue);
     calculatedDirection += direction;
 
@@ -85,7 +75,7 @@ public class Boid : MonoBehaviour
       averagePosition += fish.transform.position;
     }
     averagePosition /= flock.Count;
-    Vector3 direction = (averagePosition - transform.position).normalized * cohesionPull;
+    Vector3 direction = (averagePosition - transform.position).normalized * FM.cohesionPull;
     Debug.DrawRay(transform.position, direction, Color.yellow);
     calculatedDirection += direction;
   }
@@ -96,17 +86,10 @@ public class Boid : MonoBehaviour
     flock.Clear();
     foreach (var fish in allBoids)
     {
-      if (fish != this && Vector3.Distance(transform.position, fish.transform.position) < flockRange)
+      if (fish != this && Vector3.Distance(transform.position, fish.transform.position) < FM.flockRange)
       {
         flock.Add(fish);
       }
     }
-  }
-
-
-  private void DebugRays()
-  {
-    Vector3 forward = this.transform.TransformDirection(Vector3.forward) * 10;
-    Debug.DrawRay(transform.position, forward, Color.green);
   }
 }
