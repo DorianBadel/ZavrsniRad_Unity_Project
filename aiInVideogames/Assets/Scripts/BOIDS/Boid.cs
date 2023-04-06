@@ -83,13 +83,13 @@ public class Boid : MonoBehaviour
 
   private void Move()
   {
-    Vector3 movingDirection = Vector3.zero;
+    Vector3 targetDirection = Vector3.zero;
     if (target != null)
     {
-      movingDirection = (target.position - transform.position).normalized * FM.targetPull;
+      targetDirection = (target.position - transform.position).normalized * FM.targetPull;
     }
 
-    movingDirection += calculatedDirection;
+    Vector3 movingDirection = Vector3.Lerp(transform.position, targetDirection, 0.8f) + calculatedDirection;
 
     Debug.DrawRay(transform.position, movingDirection, Color.magenta);
 
