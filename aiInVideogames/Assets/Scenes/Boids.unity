@@ -322,6 +322,31 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 704351122}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1085994996 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6757779520928656724, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6757779521090923717}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1085994997 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6757779520928656727, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6757779521090923717}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1085995001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085994996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8436af1cf4ea5749a7a503f17168e9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 100
 --- !u!4 &1346744043 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6757779521900708398, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
@@ -524,10 +549,45 @@ PrefabInstance:
       propertyPath: FM
       value: 
       objectReference: {fileID: 1346744044}
+    - target: {fileID: 5734176461493841490, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1085994997}
+    - target: {fileID: 5734176461493841490, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: flockRange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5734176461493841490, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: targetName
+      value: Sphere
+      objectReference: {fileID: 0}
+    - target: {fileID: 5734176461493841490, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: targetPull
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5734176461493841490, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: separationPull
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757779520928656724, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: m_Name
+      value: Target
+      objectReference: {fileID: 0}
     - target: {fileID: 6757779520928656724, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
         type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757779520928656727, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 50.4
       objectReference: {fileID: 0}
     - target: {fileID: 6757779521900708398, guid: f6a83db80e166ea4ab3ccbe0aafafa0e,
         type: 3}
