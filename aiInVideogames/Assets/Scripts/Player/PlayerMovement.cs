@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
         FirstPersonMovement();
       else PlayerMovementTD();
 
-    //HandleFalling();
+    HandleFalling();
   }
 
   private void HandleFalling()
