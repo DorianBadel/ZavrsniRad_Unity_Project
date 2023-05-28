@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Deposit
   - Ore
+  - BoidTarget
   layers:
   - Default
   - TransparentFX
