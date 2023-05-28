@@ -197,3 +197,8 @@ Thumbs.db
 
 *.nuget.props
 *.nuget.targets
+
+# =============== #
+# Specific too large file #
+# =============== #
+aiInVideogames/Assets/Scenes/MapGeneration.unity
