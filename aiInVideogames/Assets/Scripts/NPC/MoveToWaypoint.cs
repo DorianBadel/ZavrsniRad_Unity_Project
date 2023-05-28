@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,13 @@ public class MoveToWaypoint : MonoBehaviour
 
   [Header("Required")]
   public Transform[] waypoints;
+  public GameObject surfaceNormal;
 
   [Header("Adjustable variables")]
   public float moveSpeed = 10f;
   public float stoppingDistance = 0.5f;
   public float rotationSpeed = 3f;
+
 
   void Start()
   {
@@ -44,7 +47,17 @@ public class MoveToWaypoint : MonoBehaviour
 
       if (type != 1)
       {
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotateTowards, rotationSpeed * Time.deltaTime);
+        if (surfaceNormal != null)
+        {
+          Vector3 directionToTarget = waypoints[destinationIndex].position - transform.position;
+          Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, surfaceNormal.transform.up);
+          transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+          transform.rotation = Quaternion.Slerp(transform.rotation, rotateTowards, rotationSpeed * Time.deltaTime);
+
+        }
       }
 
       transform.position = Vector3.MoveTowards(transform.position, waypoints[destinationIndex].position, moveSpeed * Time.deltaTime);
@@ -55,6 +68,16 @@ public class MoveToWaypoint : MonoBehaviour
         destinationIndex++;
         if (destinationIndex == waypoints.Length) destinationIndex = 0;
       }
+    }
+  }
+
+  private void AttachToGround()
+  {
+    if (surfaceNormal != null)
+    {
+
+      Quaternion targetRotation = Quaternion.FromToRotation(transform.up, surfaceNormal.transform.up) * transform.rotation;
+      transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
   }
 }
