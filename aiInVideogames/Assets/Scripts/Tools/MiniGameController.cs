@@ -11,6 +11,30 @@ public class MiniGameController : MonoBehaviour
     none
   }
   private ActiveMiniGameType activeMiniGame;
+  private CameraController cameraController;
+
+  void Awake()
+  {
+    activeMiniGame = ActiveMiniGameType.none;
+    cameraController = GameObject.FindGameObjectWithTag("GameController").GetComponent<CameraController>();
+  }
+
+  void Update()
+  {
+    if (activeMiniGame == ActiveMiniGameType.Maze && cameraController.GetActiveCameraName() != "MazeCamera")
+    {
+      cameraController.SetActiveCamera("MazeCamera");
+    }
+    else if (activeMiniGame == ActiveMiniGameType.NavMesh && cameraController.GetActiveCameraName() != "NavMeshCamera")
+    {
+      cameraController.SetActiveCamera("NavMeshCamera");
+    }
+    else if (activeMiniGame == ActiveMiniGameType.none && cameraController.GetActiveCameraName() != "DefaultCamera")
+    {
+      cameraController.SetActiveCamera("DefaultCamera");
+    }
+  }
+
   public void SetActiveMiniGame(string miniGame)
   {
     if (miniGame == "maze")
@@ -24,28 +48,6 @@ public class MiniGameController : MonoBehaviour
     else if (miniGame == "none")
     {
       activeMiniGame = ActiveMiniGameType.none;
-    }
-  }
-
-  void Awake()
-  {
-    activeMiniGame = ActiveMiniGameType.none;
-  }
-
-  void Update()
-  {
-    if (activeMiniGame == ActiveMiniGameType.Maze)
-    {
-      //do something
-      Debug.Log("Maze");
-    }
-    else if (activeMiniGame == ActiveMiniGameType.NavMesh)
-    {
-      //do something
-    }
-    else if (activeMiniGame == ActiveMiniGameType.none)
-    {
-      //do something
     }
   }
 }
