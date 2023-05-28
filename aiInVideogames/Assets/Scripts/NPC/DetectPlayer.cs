@@ -41,7 +41,7 @@ public class DetectPlayer : MonoBehaviour
       CancelInvoke(); lamp.color = Color.white;
     }
 
-    if (gameMaster.mazeEnemiesMove)
+    if (gameMaster.mazeMiniGameActive)
     {
       //If this part of the game is relevant
       LookForPlayer();

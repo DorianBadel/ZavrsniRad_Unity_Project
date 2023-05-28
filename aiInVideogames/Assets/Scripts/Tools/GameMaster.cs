@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameMaster : MonoBehaviour
 {
   private GameObject player;
-  public bool mazeEnemiesMove = true;
+  public bool mazeMiniGameActive = false;
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
@@ -15,6 +15,7 @@ public class GameMaster : MonoBehaviour
   public Camera topDownCameraNavMesh;
   public Transform mazeRespawnPoint;
   private GameObject mazeKey;
+  private MiniGameController miniGameController;
 
   void Awake()
   {
@@ -22,6 +23,7 @@ public class GameMaster : MonoBehaviour
     playerStats = player.GetComponent<PlayerStats>();
 
     mazeKey = GameObject.FindGameObjectWithTag("MazeKey");
+    miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
   }
 
   void Update()
@@ -31,11 +33,21 @@ public class GameMaster : MonoBehaviour
       FirstPersonCamera();
     }
 
-    if (mazeEnemiesMove && Input.GetKeyDown(KeyCode.F))
+    if (mazeMiniGameActive && Input.GetKeyDown(KeyCode.F))
     {
       if (topDownCameraMaze.enabled) FirstPersonCamera();
       else TopDownMazeCamera();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+      SetActiveMiniGame("none");
+    }
+  }
+
+  public void SetActiveMiniGame(string miniGame)
+  {
+    miniGameController.SetActiveMiniGame(miniGame);
   }
 
   public void ShouldKeyHide(bool answer)
@@ -49,7 +61,7 @@ public class GameMaster : MonoBehaviour
     playerStats.SetFirstPersonControlls(false);
     keyShouldHide = true;
     playerStats.HasKey = false;
-    mazeEnemiesMove = true;
+    mazeMiniGameActive = true;
     Cursor.lockState = CursorLockMode.Locked;
   }
 
@@ -60,7 +72,7 @@ public class GameMaster : MonoBehaviour
     playerStats.SetFirstPersonControlls(false);
     playerStats.HasKey = false;
     playerStats.IsDisabled = true;
-    mazeEnemiesMove = false;
+    mazeMiniGameActive = false;
     navmeshWallsMove = true;
     Cursor.visible = true;
     Cursor.lockState = CursorLockMode.None;
@@ -84,7 +96,7 @@ public class GameMaster : MonoBehaviour
 
     //Move him to first person camera and prevent AI from moving (for effect)
     FirstPersonCamera();
-    mazeEnemiesMove = false;
+    mazeMiniGameActive = false;
     //TODO UI info
     StartCoroutine("respawn");
   }
@@ -96,7 +108,7 @@ public class GameMaster : MonoBehaviour
       case 1:
         return navmeshWallsMove;
       case 2:
-        return mazeEnemiesMove;
+        return mazeMiniGameActive;
     }
     return false;
   }

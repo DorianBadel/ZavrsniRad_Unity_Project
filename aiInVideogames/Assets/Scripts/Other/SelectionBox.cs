@@ -5,7 +5,13 @@ using UnityEngine;
 public class SelectionBox : MonoBehaviour
 {
   private bool playerIsInTrigger = false;
-  // Start is called before the first frame update
+  private GameMaster gameMaster;
+
+  private void Start()
+  {
+    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
+  }
+
   private void OnTriggerEnter(Collider collider)
   {
     if (collider.CompareTag("Player"))
@@ -21,6 +27,7 @@ public class SelectionBox : MonoBehaviour
     }
   }
 
+  // This doesn't work
   private void onGUI()
   {
     if (playerIsInTrigger)
@@ -36,7 +43,7 @@ public class SelectionBox : MonoBehaviour
       if (Input.GetKeyDown(KeyCode.E))
       {
         //do something
-        Debug.Log("Interacted with object");
+        gameMaster.SetActiveMiniGame("maze");
       }
     }
   }
