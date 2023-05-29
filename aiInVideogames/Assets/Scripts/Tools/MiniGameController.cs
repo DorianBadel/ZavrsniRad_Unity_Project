@@ -50,4 +50,9 @@ public class MiniGameController : MonoBehaviour
       activeMiniGame = ActiveMiniGameType.none;
     }
   }
+
+  public string GetActiveMiniGame()
+  {
+    return activeMiniGame.ToString();
+  }
 }

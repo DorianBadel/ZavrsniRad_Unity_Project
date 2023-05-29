@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
   void Update()
   {
+    if (stats.IsInMiniGame) return;
+
     if (!stats.IsDisabled)
       if (stats.FirstPersonControlls)
         FirstPersonMovement();

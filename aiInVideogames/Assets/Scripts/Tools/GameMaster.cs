@@ -47,6 +47,9 @@ public class GameMaster : MonoBehaviour
 
   public void SetActiveMiniGame(string miniGame)
   {
+    if (miniGame != "none") playerStats.IsInMiniGame = true;
+    else playerStats.IsInMiniGame = false;
+
     miniGameController.SetActiveMiniGame(miniGame);
   }
 
