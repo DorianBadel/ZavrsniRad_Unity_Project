@@ -7,7 +7,10 @@ public class MoveToWaypoint : MonoBehaviour
 {
   private int destinationIndex = 0;
   private GameMaster gameMaster;
+  private MiniGameController miniGameController;
   public int type = 1;
+
+  public MiniGameController.ActiveMiniGameType activeMiniGame = MiniGameController.ActiveMiniGameType.none;
 
   [Header("Required")]
   public Transform[] waypoints;
@@ -22,6 +25,7 @@ public class MoveToWaypoint : MonoBehaviour
   void Start()
   {
     gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
+    miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
 
     if (waypoints.Length <= 1)
     {
@@ -32,7 +36,7 @@ public class MoveToWaypoint : MonoBehaviour
 
   void Update()
   {
-    if (gameMaster.ShouldMove(type))
+    if (miniGameController.GetActiveMiniGame() == activeMiniGame.ToString())
     {
       MoveToWaypoints();
     }

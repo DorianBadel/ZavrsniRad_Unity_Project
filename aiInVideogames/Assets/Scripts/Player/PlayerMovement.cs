@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
     charController = GetComponent<CharacterController>();
     stats = GetComponent<PlayerStats>();
     characterCamera = Camera.main;
+    Cursor.lockState = CursorLockMode.Locked;
+    Cursor.visible = false;
   }
 
   void Update()
@@ -44,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
   {
     isGrounded = Physics.CheckSphere(feet.position, groundDetectionRange, groundMask);
 
-    //if (isGrounded && fallingVelocity.y < 0) fallingVelocity.y = -2f;
+    if (isGrounded && fallingVelocity.y < 0) fallingVelocity.y = -2f; // isn't grounded?
 
     fallingVelocity.y += gravity * Time.deltaTime;
     charController.Move(fallingVelocity * Time.deltaTime);
