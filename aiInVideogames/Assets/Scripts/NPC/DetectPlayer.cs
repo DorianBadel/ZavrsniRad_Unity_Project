@@ -41,13 +41,13 @@ public class DetectPlayer : MonoBehaviour
       CancelInvoke(); lamp.color = Color.white;
     }
 
-    if (gameMaster.mazeMiniGameActive)
-    {
-      //If this part of the game is relevant
-      LookForPlayer();
-      lamp.range = detectionRange;
-      lamp.innerSpotAngle = detectionAngle;
-    }
+    // if (gameMaster.mazeMiniGameActive)
+    // {
+    //   //If this part of the game is relevant
+    //   LookForPlayer();
+    //   lamp.range = detectionRange;
+    //   lamp.innerSpotAngle = detectionAngle;
+    // }
 
   }
 
@@ -66,12 +66,12 @@ public class DetectPlayer : MonoBehaviour
     //If he is within the detection cone angle, and isn't too far check if the ray hit a player
     if (angleToPlayer < detectionAngle / 2 && Physics.Raycast(newRay, out objectHit, detectionRange))
     {
-      if (objectHit.collider.gameObject.CompareTag("Player"))
-      {
-        gameMaster.PlayerDetected();
+      // if (objectHit.collider.gameObject.CompareTag("Player"))
+      // {
+      //   gameMaster.PlayerDetected();
 
-        //Just for visuals
-      }
+      //   //Just for visuals
+      // }
     }
   }
 

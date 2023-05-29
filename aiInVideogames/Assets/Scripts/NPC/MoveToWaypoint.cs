@@ -6,10 +6,7 @@ using UnityEngine;
 public class MoveToWaypoint : MonoBehaviour
 {
   private int destinationIndex = 0;
-  private GameMaster gameMaster;
   private MiniGameController miniGameController;
-  public int type = 1;
-
   public MiniGameController.ActiveMiniGameType activeMiniGame = MiniGameController.ActiveMiniGameType.none;
 
   [Header("Required")]
@@ -24,7 +21,6 @@ public class MoveToWaypoint : MonoBehaviour
 
   void Start()
   {
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
     miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
 
     if (waypoints.Length <= 1)
@@ -40,16 +36,14 @@ public class MoveToWaypoint : MonoBehaviour
     {
       MoveToWaypoints();
     }
-
   }
 
   private void MoveToWaypoints()
   {
     if (waypoints.Length > 0)
     {
-      Quaternion rotateTowards = Quaternion.LookRotation(waypoints[destinationIndex].position - transform.position);
 
-      if (type != 1)
+      if (miniGameController.GetActiveMiniGame() == "Maze")
       {
         if (surfaceNormal != null)
         {
@@ -59,8 +53,8 @@ public class MoveToWaypoint : MonoBehaviour
         }
         else
         {
+          Quaternion rotateTowards = Quaternion.LookRotation(waypoints[destinationIndex].position - transform.position);
           transform.rotation = Quaternion.Slerp(transform.rotation, rotateTowards, rotationSpeed * Time.deltaTime);
-
         }
       }
 
@@ -79,7 +73,6 @@ public class MoveToWaypoint : MonoBehaviour
   {
     if (surfaceNormal != null)
     {
-
       Quaternion targetRotation = Quaternion.FromToRotation(transform.up, surfaceNormal.transform.up) * transform.rotation;
       transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }

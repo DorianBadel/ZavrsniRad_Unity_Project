@@ -37,11 +37,11 @@ public class MiniGameController : MonoBehaviour
 
   public void SetActiveMiniGame(string miniGame)
   {
-    if (miniGame == "maze")
+    if (miniGame == "Maze")
     {
       activeMiniGame = ActiveMiniGameType.Maze;
     }
-    else if (miniGame == "navmesh")
+    else if (miniGame == "NavMesh")
     {
       activeMiniGame = ActiveMiniGameType.NavMesh;
     }

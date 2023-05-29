@@ -5,14 +5,11 @@ using UnityEngine;
 public class GameMaster : MonoBehaviour
 {
   private GameObject player;
-  public bool mazeMiniGameActive = false;
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
 
   [Header("Requirements")]
-  public Camera topDownCameraMaze;
-  public Camera topDownCameraNavMesh;
   public Transform mazeRespawnPoint;
   private GameObject mazeKey;
   private MiniGameController miniGameController;
@@ -28,16 +25,16 @@ public class GameMaster : MonoBehaviour
 
   void Update()
   {
-    if (topDownCameraNavMesh.enabled && Input.GetKeyDown(KeyCode.Escape))
-    {
-      FirstPersonCamera();
-    }
+    // if (topDownCameraNavMesh.enabled && Input.GetKeyDown(KeyCode.Escape))
+    // {
+    //   FirstPersonCamera();
+    // }
 
-    if (mazeMiniGameActive && Input.GetKeyDown(KeyCode.F))
-    {
-      if (topDownCameraMaze.enabled) FirstPersonCamera();
-      else TopDownMazeCamera();
-    }
+    // if (mazeMiniGameActive && Input.GetKeyDown(KeyCode.F))
+    // {
+    //   if (topDownCameraMaze.enabled) FirstPersonCamera();
+    //   else TopDownMazeCamera();
+    // }
 
     if (Input.GetKeyDown(KeyCode.Escape))
     {
@@ -58,51 +55,51 @@ public class GameMaster : MonoBehaviour
     keyShouldHide = answer;
   }
 
-  public void TopDownMazeCamera()
-  {
-    topDownCameraMaze.enabled = true;
-    playerStats.SetFirstPersonControlls(false);
-    keyShouldHide = true;
-    playerStats.HasKey = false;
-    mazeMiniGameActive = true;
-    Cursor.lockState = CursorLockMode.Locked;
-  }
+  // public void TopDownMazeCamera()
+  // {
+  //   topDownCameraMaze.enabled = true;
+  //   playerStats.SetFirstPersonControlls(false);
+  //   keyShouldHide = true;
+  //   playerStats.HasKey = false;
+  //   mazeMiniGameActive = true;
+  //   Cursor.lockState = CursorLockMode.Locked;
+  // }
 
-  public void TopDownNavMeshCamera()
-  {
-    topDownCameraMaze.enabled = false;
-    topDownCameraNavMesh.enabled = true;
-    playerStats.SetFirstPersonControlls(false);
-    playerStats.HasKey = false;
-    playerStats.IsDisabled = true;
-    mazeMiniGameActive = false;
-    navmeshWallsMove = true;
-    Cursor.visible = true;
-    Cursor.lockState = CursorLockMode.None;
-  }
+  // public void TopDownNavMeshCamera()
+  // {
+  //   topDownCameraMaze.enabled = false;
+  //   topDownCameraNavMesh.enabled = true;
+  //   playerStats.SetFirstPersonControlls(false);
+  //   playerStats.HasKey = false;
+  //   playerStats.IsDisabled = true;
+  //   mazeMiniGameActive = false;
+  //   navmeshWallsMove = true;
+  //   Cursor.visible = true;
+  //   Cursor.lockState = CursorLockMode.None;
+  // }
 
-  public void FirstPersonCamera()
-  {
-    topDownCameraMaze.enabled = false;
-    topDownCameraNavMesh.enabled = false;
-    playerStats.SetFirstPersonControlls(true);
-    playerStats.IsDisabled = false; //TODO move to the script that uses it
-    Cursor.visible = false;
-    Cursor.lockState = CursorLockMode.Locked;
+  // public void FirstPersonCamera()
+  // {
+  //   topDownCameraMaze.enabled = false;
+  //   topDownCameraNavMesh.enabled = false;
+  //   playerStats.SetFirstPersonControlls(true);
+  //   playerStats.IsDisabled = false; //TODO move to the script that uses it
+  //   Cursor.visible = false;
+  //   Cursor.lockState = CursorLockMode.Locked;
 
-  }
+  // }
 
-  public void PlayerDetected()
-  {
-    //Preventing the player to move
-    playerStats.SetDetected(true);
+  // public void PlayerDetected()
+  // {
+  //   //Preventing the player to move
+  //   playerStats.SetDetected(true);
 
-    //Move him to first person camera and prevent AI from moving (for effect)
-    FirstPersonCamera();
-    mazeMiniGameActive = false;
-    //TODO UI info
-    StartCoroutine("respawn");
-  }
+  //   //Move him to first person camera and prevent AI from moving (for effect)
+  //   FirstPersonCamera();
+  //   mazeMiniGameActive = false;
+  //   //TODO UI info
+  //   StartCoroutine("respawn");
+  // }
 
   public bool ShouldMove(int type)
   {
@@ -111,19 +108,20 @@ public class GameMaster : MonoBehaviour
       case 1:
         return navmeshWallsMove;
       case 2:
-        return mazeMiniGameActive;
+        // return mazeMiniGameActive;
+        break;
     }
     return false;
   }
 
-  IEnumerator respawn()
-  {
-    yield return new WaitForSeconds(3f);
-    player.transform.position = mazeRespawnPoint.position;
-    yield return new WaitForSeconds(0.1f);
-    playerStats.SetDetected(false);
-    mazeKey.GetComponent<MazeKey>().RespawnKey();
-    TopDownMazeCamera();
-    //TODO Remove hasKey, respawn the key if it was picked up
-  }
+  // IEnumerator respawn()
+  // {
+  //   yield return new WaitForSeconds(3f);
+  //   player.transform.position = mazeRespawnPoint.position;
+  //   yield return new WaitForSeconds(0.1f);
+  //   playerStats.SetDetected(false);
+  //   mazeKey.GetComponent<MazeKey>().RespawnKey();
+  //   TopDownMazeCamera();
+  //   //TODO Remove hasKey, respawn the key if it was picked up
+  // }
 }

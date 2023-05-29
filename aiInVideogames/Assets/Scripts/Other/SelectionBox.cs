@@ -43,7 +43,7 @@ public class SelectionBox : MonoBehaviour
       if (Input.GetKeyDown(KeyCode.E))
       {
         //do something
-        gameMaster.SetActiveMiniGame("maze");
+        gameMaster.SetActiveMiniGame("Maze");
       }
     }
   }
