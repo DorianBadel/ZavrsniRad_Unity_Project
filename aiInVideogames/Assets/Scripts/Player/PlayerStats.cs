@@ -10,10 +10,7 @@ public class PlayerStats : MonoBehaviour
   public float mouseSensitivity = 100f;
   public float jumpStrength = 3f;
   public bool HasKey = false;
-  public bool FirstPersonControlls = true;
   public bool IsUnderwater = false;
-  public bool IsDetected = false;
-  public bool IsDisabled = false;
   public bool IsInMiniGame = false;
 
   public void PickUpKey()
@@ -24,16 +21,5 @@ public class PlayerStats : MonoBehaviour
   public void DropKey()
   {
     HasKey = false;
-  }
-
-  public void SetFirstPersonControlls(bool isFirstPerson)
-  {
-    FirstPersonControlls = isFirstPerson;
-  }
-
-  public void SetDetected(bool hasBeenDetected)
-  {
-    IsDetected = hasBeenDetected;
-    if (IsDetected == true) DropKey();
   }
 }

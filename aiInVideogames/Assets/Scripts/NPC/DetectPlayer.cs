@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class DetectPlayer : MonoBehaviour
 {
-  private GameObject player;
-  private GameMaster gameMaster;
-  private PlayerStats playerStats;
+  private GameObject target;
+  private MiniGameController miniGameController;
 
   [Header("Required")]
   public Light lamp;
@@ -17,19 +16,17 @@ public class DetectPlayer : MonoBehaviour
 
   void Start()
   {
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
+    miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
 
-    player = GameObject.FindGameObjectWithTag("Player");
-    playerStats = player.GetComponent<PlayerStats>();
+    target = GameObject.FindGameObjectWithTag("MazePlayer");
 
   }
 
   void Update()
   {
-    if (playerStats.IsDetected)
+    if (miniGameController.GetPlayerDetected())
     {
-      //Rotate towards player if he is detected
-      Quaternion targetRot = Quaternion.LookRotation(player.transform.position - this.transform.position);
+      Quaternion targetRot = Quaternion.LookRotation(target.transform.position - this.transform.position);
       this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, targetRot, 30f * Time.deltaTime);
 
       lamp.color = Color.red;
@@ -41,37 +38,36 @@ public class DetectPlayer : MonoBehaviour
       CancelInvoke(); lamp.color = Color.white;
     }
 
-    // if (gameMaster.mazeMiniGameActive)
-    // {
-    //   //If this part of the game is relevant
-    //   LookForPlayer();
-    //   lamp.range = detectionRange;
-    //   lamp.innerSpotAngle = detectionAngle;
-    // }
+    if (miniGameController.GetActiveMiniGame() == "Maze")
+    {
+      //If this part of the game is relevant
+      LookForPlayer();
+      lamp.range = detectionRange;
+      lamp.innerSpotAngle = detectionAngle;
+    }
 
   }
 
   private void LookForPlayer()
   {
-
     //Draw a ray towards the player
-    Vector3 directionToPlayer = player.transform.position - transform.position;
+    Vector3 directionToPlayer = target.transform.position - transform.position;
     RaycastHit objectHit;
     Ray newRay = new Ray(transform.position, directionToPlayer);
+    Debug.DrawRay(transform.position, directionToPlayer, Color.red);
 
     //Calculate at what angle the player is compared to the AI-s forward direction
     float angleToPlayer = Vector3.Angle(directionToPlayer, transform.forward);
 
+    Debug.DrawRay(transform.position, transform.forward * detectionRange, Color.green);
 
     //If he is within the detection cone angle, and isn't too far check if the ray hit a player
     if (angleToPlayer < detectionAngle / 2 && Physics.Raycast(newRay, out objectHit, detectionRange))
     {
-      // if (objectHit.collider.gameObject.CompareTag("Player"))
-      // {
-      //   gameMaster.PlayerDetected();
-
-      //   //Just for visuals
-      // }
+      if (objectHit.collider.gameObject.CompareTag("MazePlayer"))
+      {
+        miniGameController.SetPlayerDetected(target, true);
+      }
     }
   }
 
@@ -83,6 +79,5 @@ public class DetectPlayer : MonoBehaviour
   private void FlickerLampToDark()
   {
     lamp.color = Color.red;
-
   }
 }

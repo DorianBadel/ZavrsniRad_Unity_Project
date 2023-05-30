@@ -8,9 +8,6 @@ public class GameMaster : MonoBehaviour
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
-
-  [Header("Requirements")]
-  public Transform mazeRespawnPoint;
   private GameObject mazeKey;
   private MiniGameController miniGameController;
 

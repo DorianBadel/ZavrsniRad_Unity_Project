@@ -34,11 +34,7 @@ public class PlayerMovement : MonoBehaviour
   {
     if (stats.IsInMiniGame) return;
 
-    if (!stats.IsDisabled)
-      if (stats.FirstPersonControlls)
-        FirstPersonMovement();
-      else PlayerMovementTD();
-
+    FirstPersonMovement();
     HandleFalling();
   }
 
@@ -52,22 +48,9 @@ public class PlayerMovement : MonoBehaviour
     charController.Move(fallingVelocity * Time.deltaTime);
   }
 
-  private void PlayerMovementTD()
-  {
-    if (this.transform.localRotation != Quaternion.Euler(0, 90, 0))
-      this.transform.localRotation = Quaternion.Euler(0, 90, 0);
-
-    Vector3 movement = -transform.right * Input.GetAxis("Vertical") + transform.forward * Input.GetAxis("Horizontal");
-
-    charController.Move(movement * stats.movementSpeed * 2 * Time.deltaTime);
-  }
-
   private void FirstPersonMovement()
   {
     PlayerRotationFP();
-
-    if (stats.IsDetected) return;
-
     PlayerMovementFP();
     PlayerJumpFP();
   }

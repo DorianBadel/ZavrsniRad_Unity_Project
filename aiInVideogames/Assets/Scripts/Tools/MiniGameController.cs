@@ -12,11 +12,21 @@ public class MiniGameController : MonoBehaviour
   }
   private ActiveMiniGameType activeMiniGame;
   private CameraController cameraController;
+  private GameMaster gameMaster;
+
+  private bool playerDetected = false;
+
+  [Header("Requirements")]
+  public Transform mazeRespawnPoint;
+
 
   void Awake()
   {
     activeMiniGame = ActiveMiniGameType.none;
     cameraController = GameObject.FindGameObjectWithTag("GameController").GetComponent<CameraController>();
+    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
+    if (mazeRespawnPoint == null) Debug.LogError("Maze respawn point not set");
+
   }
 
   void Update()
@@ -37,6 +47,12 @@ public class MiniGameController : MonoBehaviour
 
   public void SetActiveMiniGame(string miniGame)
   {
+    if (playerDetected)
+    {
+      Debug.Log("Player detected, can't change mini game");
+      return;
+    }
+
     if (miniGame == "Maze")
     {
       activeMiniGame = ActiveMiniGameType.Maze;
@@ -54,5 +70,30 @@ public class MiniGameController : MonoBehaviour
   public string GetActiveMiniGame()
   {
     return activeMiniGame.ToString();
+  }
+
+  // Maze mini game
+
+  public bool GetPlayerDetected()
+  {
+    return playerDetected;
+  }
+
+  public void SetPlayerDetected(GameObject player, bool detected)
+  {
+    if (activeMiniGame == ActiveMiniGameType.Maze)
+    {
+      gameMaster.SetActiveMiniGame("none");
+      playerDetected = detected;
+    }
+    StartCoroutine(ResetPlayerDetected(player));
+  }
+
+  IEnumerator ResetPlayerDetected(GameObject player)
+  {
+    yield return new WaitForSeconds(2);
+    player.transform.position = mazeRespawnPoint.position;
+
+    playerDetected = false;
   }
 }
