@@ -53,6 +53,14 @@ public class GameMaster : MonoBehaviour
     keyShouldHide = answer;
   }
 
+  public void CompleteMiniGame(string miniGame)
+  {
+    if (miniGame == "Maze" && playerStats.HasKey)
+    {
+      miniGameController.CompleteMaze();
+    }
+  }
+
   // public void TopDownMazeCamera()
   // {
   //   topDownCameraMaze.enabled = true;

@@ -10,6 +10,7 @@ TagManager:
   - Ore
   - BoidTarget
   - MazePlayer
+  - MazeExit
   layers:
   - Default
   - TransparentFX

@@ -16,9 +16,11 @@ public class MiniGameController : MonoBehaviour
 
   private bool playerDetected = false;
   private MazeKey mazeKey;
+  private bool completeCoroutineRunning = false;
 
   [Header("Requirements")]
   public Transform mazeRespawnPoint;
+  public GameObject mazeKeyPrefab;
 
 
   void Awake()
@@ -107,5 +109,44 @@ public class MiniGameController : MonoBehaviour
   public void RespawnKey()
   {
     mazeKey.RespawnKey();
+  }
+
+  public void CompleteMaze()
+  {
+    if (completeCoroutineRunning) return;
+
+    StartCoroutine(MazeCompleteCoroutine());
+  }
+
+  IEnumerator MazeCompleteCoroutine()
+  {
+    completeCoroutineRunning = true;
+    GameObject player = GameObject.FindGameObjectWithTag("MazePlayer");
+    MazeCompleteAnimation(player);
+    yield return new WaitForSeconds(2);
+    player.transform.position = mazeRespawnPoint.position;
+    RespawnKey();
+    gameMaster.SetActiveMiniGame("none");
+    completeCoroutineRunning = false;
+  }
+
+  public void MazeCompleteAnimation(GameObject player)
+  {
+    GameObject mazeCompletionObj = GameObject.Instantiate(mazeKeyPrefab, player.transform.position, Quaternion.identity);
+    GameObject mazeExit = GameObject.FindGameObjectWithTag("MazeExit");
+
+    StartCoroutine(MazeCompleteAnimationCoroutine(mazeCompletionObj, mazeExit));
+  }
+
+  IEnumerator MazeCompleteAnimationCoroutine(GameObject mazeCompletionObj, GameObject mazeExit)
+  {
+    float t = 0;
+    while (t < 2)
+    {
+      t += Time.deltaTime;
+      mazeCompletionObj.transform.position = Vector3.Lerp(mazeCompletionObj.transform.position, mazeExit.transform.position, t);
+      yield return null;
+    }
+    Destroy(mazeCompletionObj);
   }
 }

@@ -7,6 +7,15 @@ public class SelectionBox : MonoBehaviour
   private bool playerIsInTrigger = false;
   private GameMaster gameMaster;
 
+  public enum SelectionType
+  {
+    Maze,
+    MazeCompletion,
+    NavMesh
+  }
+
+  public SelectionType selectionType;
+
   private void Start()
   {
     gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
@@ -14,25 +23,16 @@ public class SelectionBox : MonoBehaviour
 
   private void OnTriggerEnter(Collider collider)
   {
-    if (collider.CompareTag("Player"))
+    if (collider.CompareTag("Player") || collider.CompareTag("MazePlayer"))
     {
       playerIsInTrigger = true;
     }
   }
   private void OnTriggerExit(Collider collider)
   {
-    if (collider.CompareTag("Player"))
+    if (collider.CompareTag("Player") || collider.CompareTag("MazePlayer"))
     {
       playerIsInTrigger = false;
-    }
-  }
-
-  // This doesn't work
-  private void onGUI()
-  {
-    if (playerIsInTrigger)
-    {
-      GUI.Label(new Rect(10, 10, 100, 20), "Press E to interact");
     }
   }
 
@@ -40,9 +40,12 @@ public class SelectionBox : MonoBehaviour
   {
     if (playerIsInTrigger)
     {
+      if (selectionType == SelectionType.MazeCompletion)
+      {
+        gameMaster.CompleteMiniGame("Maze");
+      }
       if (Input.GetKeyDown(KeyCode.E))
       {
-        //do something
         gameMaster.SetActiveMiniGame("Maze");
       }
     }
