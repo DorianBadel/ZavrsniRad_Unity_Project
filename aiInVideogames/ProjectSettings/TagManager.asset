@@ -9,6 +9,7 @@ TagManager:
   - Deposit
   - Ore
   - BoidTarget
+  - MazePlayer
   layers:
   - Default
   - TransparentFX

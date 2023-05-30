@@ -8,7 +8,6 @@ public class GameMaster : MonoBehaviour
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
-  private GameObject mazeKey;
   private MiniGameController miniGameController;
 
   void Awake()
@@ -16,7 +15,6 @@ public class GameMaster : MonoBehaviour
     player = GameObject.FindGameObjectWithTag("Player");
     playerStats = player.GetComponent<PlayerStats>();
 
-    mazeKey = GameObject.FindGameObjectWithTag("MazeKey");
     miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
   }
 
@@ -37,6 +35,9 @@ public class GameMaster : MonoBehaviour
     {
       SetActiveMiniGame("none");
     }
+
+    if (playerStats.HasKey && Input.GetKeyDown(KeyCode.Q))
+      miniGameController.RespawnKey();
   }
 
   public void SetActiveMiniGame(string miniGame)
@@ -110,15 +111,4 @@ public class GameMaster : MonoBehaviour
     }
     return false;
   }
-
-  // IEnumerator respawn()
-  // {
-  //   yield return new WaitForSeconds(3f);
-  //   player.transform.position = mazeRespawnPoint.position;
-  //   yield return new WaitForSeconds(0.1f);
-  //   playerStats.SetDetected(false);
-  //   mazeKey.GetComponent<MazeKey>().RespawnKey();
-  //   TopDownMazeCamera();
-  //   //TODO Remove hasKey, respawn the key if it was picked up
-  // }
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class MazeKey : MonoBehaviour
 {
-  private PlayerStats player;
+  private PlayerStats playerStats;
+  private GameObject player;
 
   [Header("Requirements")]
   public ParticleSystem destroyEffect;
@@ -14,34 +15,32 @@ public class MazeKey : MonoBehaviour
 
   void Start()
   {
-    player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+    playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+    player = GameObject.FindGameObjectWithTag("MazePlayer");
   }
 
   void Update()
   {
     //TODO seperate this in another script used for all keys
     Vector3 distanceToPlayer = player.transform.position - transform.position;
-    bool playerHasKey = player.HasKey;
+    bool playerHasKey = playerStats.HasKey;
 
     if (!playerHasKey && distanceToPlayer.magnitude <= pickupDistance && Input.GetKeyDown(KeyCode.E))
     {
       PickedUp();
       this.gameObject.SetActive(false);
     }
-
-    if (playerHasKey && Input.GetKeyDown(KeyCode.Q))
-      player.DropKey();
   }
 
   public void RespawnKey()
   {
+    playerStats.DropKey();
     this.gameObject.SetActive(true);
   }
 
   private void PickedUp()
   {
-    player.PickUpKey();
+    playerStats.PickUpKey();
     Instantiate(destroyEffect, transform.position, Quaternion.identity);
-    //Destroy(gameObject);
   }
 }

@@ -15,6 +15,7 @@ public class MiniGameController : MonoBehaviour
   private GameMaster gameMaster;
 
   private bool playerDetected = false;
+  private MazeKey mazeKey;
 
   [Header("Requirements")]
   public Transform mazeRespawnPoint;
@@ -22,9 +23,15 @@ public class MiniGameController : MonoBehaviour
 
   void Awake()
   {
+    // Getting controllers
     activeMiniGame = ActiveMiniGameType.none;
     cameraController = GameObject.FindGameObjectWithTag("GameController").GetComponent<CameraController>();
     gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
+
+    // Getting maze key
+    mazeKey = GameObject.FindGameObjectWithTag("MazeKey").GetComponent<MazeKey>();
+
+    // Checking if maze respawn point is set
     if (mazeRespawnPoint == null) Debug.LogError("Maze respawn point not set");
 
   }
@@ -93,7 +100,12 @@ public class MiniGameController : MonoBehaviour
   {
     yield return new WaitForSeconds(2);
     player.transform.position = mazeRespawnPoint.position;
-
+    RespawnKey();
     playerDetected = false;
+  }
+
+  public void RespawnKey()
+  {
+    mazeKey.RespawnKey();
   }
 }
