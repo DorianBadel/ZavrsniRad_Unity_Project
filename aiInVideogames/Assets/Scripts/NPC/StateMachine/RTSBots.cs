@@ -9,10 +9,10 @@ public class RTSBots : MonoBehaviour
   [Header("GeneralAI")]
   public Vector3 target;
   public UnityEngine.AI.NavMeshAgent agent;
-  public GameObject deposit;
+  private GameObject deposit;
   private DepositScript depositStats;
   private OreScript oreStats;
-  public GameObject ore;
+  private GameObject ore;
 
   [Header("Stats")]
   public int currentLoad = 0;
@@ -42,7 +42,7 @@ public class RTSBots : MonoBehaviour
 
   void Update()
   {
-    colorSwap();
+    // colorSwap();
     if (!oreStats.hasOre()) ore = null;
     switch (stateMachine.currentState)
     {

@@ -42,14 +42,17 @@ public class MiniGameController : MonoBehaviour
   {
     if (activeMiniGame == ActiveMiniGameType.Maze && cameraController.GetActiveCameraName() != "MazeCamera")
     {
+      ShowCursor(false);
       cameraController.SetActiveCamera("MazeCamera");
     }
     else if (activeMiniGame == ActiveMiniGameType.NavMesh && cameraController.GetActiveCameraName() != "NavMeshCamera")
     {
+      ShowCursor(true);
       cameraController.SetActiveCamera("NavMeshCamera");
     }
     else if (activeMiniGame == ActiveMiniGameType.none && cameraController.GetActiveCameraName() != "DefaultCamera")
     {
+      ShowCursor(false);
       cameraController.SetActiveCamera("DefaultCamera");
     }
   }
@@ -148,5 +151,19 @@ public class MiniGameController : MonoBehaviour
       yield return null;
     }
     Destroy(mazeCompletionObj);
+  }
+
+  private void ShowCursor(bool show)
+  {
+    if (show)
+    {
+      Cursor.lockState = CursorLockMode.Confined;
+      Cursor.visible = true;
+    }
+    else
+    {
+      Cursor.lockState = CursorLockMode.Locked;
+      Cursor.visible = false;
+    }
   }
 }
