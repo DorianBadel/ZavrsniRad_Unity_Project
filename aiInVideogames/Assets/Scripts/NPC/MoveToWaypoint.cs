@@ -57,6 +57,11 @@ public class MoveToWaypoint : MonoBehaviour
           transform.rotation = Quaternion.Slerp(transform.rotation, rotateTowards, rotationSpeed * Time.deltaTime);
         }
       }
+      else if (miniGameController.GetActiveMiniGame() == "NavMesh")
+      {
+        //Never stop rotating around its Z axis
+        transform.Rotate(0, 0, rotationSpeed);
+      }
 
       transform.position = Vector3.MoveTowards(transform.position, waypoints[destinationIndex].position, moveSpeed * Time.deltaTime);
 
