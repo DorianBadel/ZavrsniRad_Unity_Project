@@ -23,7 +23,8 @@ public class SelectionBox : MonoBehaviour
 
   private void OnTriggerEnter(Collider collider)
   {
-    if (collider.CompareTag("Player") || collider.CompareTag("MazePlayer"))
+    if (collider.CompareTag("Player") && selectionType != SelectionType.MazeCompletion ||
+    collider.CompareTag("MazePlayer") && selectionType == SelectionType.MazeCompletion)
     {
       playerIsInTrigger = true;
     }
@@ -46,7 +47,15 @@ public class SelectionBox : MonoBehaviour
       }
       if (Input.GetKeyDown(KeyCode.E))
       {
-        gameMaster.SetActiveMiniGame("Maze");
+        switch (selectionType)
+        {
+          case SelectionType.Maze:
+            gameMaster.SetActiveMiniGame("Maze");
+            break;
+          case SelectionType.NavMesh:
+            gameMaster.SetActiveMiniGame("NavMesh");
+            break;
+        }
       }
     }
   }
