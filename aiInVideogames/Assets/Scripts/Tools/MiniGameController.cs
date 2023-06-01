@@ -18,9 +18,13 @@ public class MiniGameController : MonoBehaviour
   private MazeKey mazeKey;
   private bool completeCoroutineRunning = false;
 
-  [Header("Requirements")]
+  [Header("[Maze] Requirements")]
   public Transform mazeRespawnPoint;
   public GameObject mazeKeyPrefab;
+
+  [Header("[NavMesh] Requirements")]
+  public GameObject platformPrefab;
+  public RTSBots botScript;
 
 
   void Awake()
@@ -54,6 +58,20 @@ public class MiniGameController : MonoBehaviour
     {
       ShowCursor(false);
       cameraController.SetActiveCamera("DefaultCamera");
+    }
+  }
+
+  private void ShowCursor(bool show)
+  {
+    if (show)
+    {
+      Cursor.lockState = CursorLockMode.Confined;
+      Cursor.visible = true;
+    }
+    else
+    {
+      Cursor.lockState = CursorLockMode.Locked;
+      Cursor.visible = false;
     }
   }
 
@@ -153,17 +171,24 @@ public class MiniGameController : MonoBehaviour
     Destroy(mazeCompletionObj);
   }
 
-  private void ShowCursor(bool show)
+  public void CompleteNavMesh()
   {
-    if (show)
-    {
-      Cursor.lockState = CursorLockMode.Confined;
-      Cursor.visible = true;
-    }
-    else
-    {
-      Cursor.lockState = CursorLockMode.Locked;
-      Cursor.visible = false;
-    }
+    if (completeCoroutineRunning) return;
+
+    StartCoroutine(NavMeshCompleteCoroutine());
+  }
+
+  IEnumerator NavMeshCompleteCoroutine()
+  {
+    //MovePresure plate
+    Vector3 newPosition = new Vector3(platformPrefab.transform.position.x, platformPrefab.transform.position.y, platformPrefab.transform.position.z - platformPrefab.transform.localScale.z);
+    platformPrefab.transform.position = Vector3.Lerp(platformPrefab.transform.position, newPosition, 0.5f);
+    //Display message on screen
+    yield return new WaitForSeconds(2);
+    botScript.Reset();
+    gameMaster.SetActiveMiniGame("none");
+    Vector3 oldPosition = new Vector3(platformPrefab.transform.position.x, platformPrefab.transform.position.y, platformPrefab.transform.position.z + platformPrefab.transform.localScale.z);
+    platformPrefab.transform.position = Vector3.Lerp(platformPrefab.transform.position, newPosition, 0.5f);
+    completeCoroutineRunning = false;
   }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
+  public bool mazeMiniGameFinished = false, navMeshMiniGameFinished = false;
+
   private GameObject player;
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
@@ -58,6 +60,12 @@ public class GameMaster : MonoBehaviour
     if (miniGame == "Maze" && playerStats.HasKey)
     {
       miniGameController.CompleteMaze();
+      mazeMiniGameFinished = true;
+    }
+    if (miniGame == "NavMesh")
+    {
+      miniGameController.CompleteNavMesh();
+      navMeshMiniGameFinished = true;
     }
   }
 

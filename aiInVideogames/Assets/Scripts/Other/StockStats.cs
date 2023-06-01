@@ -48,4 +48,10 @@ public class StockStats : MonoBehaviour
     if (currentAmount > 0) return true;
     return false;
   }
+
+  public void Reset()
+  {
+    currentAmount = initialAmount;
+    UpdateVisual();
+  }
 }

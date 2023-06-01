@@ -18,6 +18,8 @@ public class RTSBots : MonoBehaviour
   public bool wantsToMine = false;
   private bool digging = false;
   private bool dropping = false;
+  private GameMaster gameMaster;
+  private Vector3 initialPosition;
 
 
   void Awake()
@@ -28,17 +30,24 @@ public class RTSBots : MonoBehaviour
   void Start()
   {
     target = transform.position;
+    initialPosition = transform.position;
     deposit = GameObject.FindGameObjectWithTag("Deposit");
     ore = GameObject.FindGameObjectWithTag("Ore");
     depositStats = deposit.GetComponent<StockStats>();
     resourceStats = ore.GetComponent<StockStats>();
     thisStorageStats = this.GetComponent<StockStats>();
+    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
   }
 
   void Update()
   {
     // colorSwap();
     if (!resourceStats.CheckIfNotEmpty()) ore = null; //Doesn't look for ore if no more is left
+
+    if (!depositStats.CheckIfHasSpace())
+    {
+      gameMaster.CompleteMiniGame("NavMesh");
+    }
     switch (stateMachine.currentState)
     {
       case StatesAndEvents.States.Mining:
@@ -179,7 +188,6 @@ public class RTSBots : MonoBehaviour
     }
   }
 
-
   //Delay for mining and depositing
   IEnumerator Dig()
   {
@@ -209,6 +217,17 @@ public class RTSBots : MonoBehaviour
       }
     }
     dropping = false;
+  }
+
+  public void Reset()
+  {
+    stateMachine.makeTransition(StatesAndEvents.Event.CommandToMove);
+    target = initialPosition;
+    wantsToMine = false;
+    depositStats.Reset();
+    thisStorageStats.Reset();
+    resourceStats.Reset();
+
   }
 
   // private void colorSwap()
