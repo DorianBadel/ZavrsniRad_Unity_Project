@@ -52,7 +52,8 @@ public class RTSBots : MonoBehaviour
           stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
           break;
         }
-        if (CheckDistanceBetween(ore, this.transform.position))
+
+        if (CheckDistanceBetween(ore, this.gameObject))
         {
           StopMovingIfWithinRange(ore);
           if (currentLoad < maxLoad)
@@ -72,7 +73,8 @@ public class RTSBots : MonoBehaviour
           stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
           break;
         }
-        if (CheckDistanceBetween(deposit, this.transform.position))
+
+        if (CheckDistanceBetween(deposit, this.gameObject))
         {
           StopMovingIfWithinRange(deposit);
           if (currentLoad > 0)
@@ -86,44 +88,41 @@ public class RTSBots : MonoBehaviour
           else
           {
             stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
-            HideEffects();
           }
         }
         break;
 
       case StatesAndEvents.States.Moving:
-        HideEffects();
-        if (Vector3.Distance(this.transform.position, target) < minDist) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
+        if (CheckDistanceBetween(this.gameObject, target)) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
         break;
       case StatesAndEvents.States.Idle:
-        { SetGoal(this.transform.position); HideEffects(); }
+        { target = this.transform.position; }
         break;
 
       default:
         stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
         break;
     }
-
     agent.SetDestination(target);
   }
 
   void StopMovingIfWithinRange(GameObject goal)
   {
-    if (CheckDistanceBetween(goal, this.transform.position, minDist / 2))
+    if (CheckDistanceBetween(goal, this.gameObject, minDist / 2))
     {
-      SetGoal(this.transform.position);
+      target = this.transform.position;
     }
   }
 
+  bool CheckDistanceBetween(GameObject obj, GameObject targetPosition, float minimalDistance = 0.0f)
+  {
+    if (minimalDistance == 0.0f) minimalDistance = minDist;
+    return Vector3.Distance(obj.transform.position, targetPosition.transform.position) < minimalDistance;
+  }
   bool CheckDistanceBetween(GameObject obj, Vector3 targetPosition, float minimalDistance = 0.0f)
   {
     if (minimalDistance == 0.0f) minimalDistance = minDist;
     return Vector3.Distance(obj.transform.position, targetPosition) < minimalDistance;
-  }
-
-  private void SetGoal(Vector3 goal)
-  {
-    target = goal;
   }
 
   private void Mine()
@@ -139,14 +138,12 @@ public class RTSBots : MonoBehaviour
   private void goDeposit()
   {
     wantsToMine = true;
-    HideEffects();
     stateMachine.makeTransition(StatesAndEvents.Event.InventoryFull);
     target = deposit.transform.position;
   }
 
   private void goMine()
   {
-    HideEffects();
     stateMachine.makeTransition(StatesAndEvents.Event.InventoryEmpty);
     target = ore.transform.position;
   }
@@ -155,7 +152,7 @@ public class RTSBots : MonoBehaviour
   //Functions for issued commands
   public void MoveHere(Vector3 goal)
   {
-    SetGoal(goal);
+    target = goal;
     stateMachine.makeTransition(StatesAndEvents.Event.CommandToMove);
     wantsToMine = false;
   }
@@ -165,7 +162,7 @@ public class RTSBots : MonoBehaviour
     if (currentLoad < maxLoad && ore != null)
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
-      SetGoal(goal);
+      target = goal;
     }
     else
     {
@@ -179,7 +176,7 @@ public class RTSBots : MonoBehaviour
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
       wantsToMine = false;
-      SetGoal(goal);
+      target = goal;
     }
     else
     {
@@ -189,11 +186,9 @@ public class RTSBots : MonoBehaviour
 
 
   //Delay for mining and depositing
-
   IEnumerator Dig()
   {
     digging = true;
-    ShowMining();
     yield return new WaitForSeconds(1);
     if (currentLoad < maxLoad)
     {
@@ -209,7 +204,6 @@ public class RTSBots : MonoBehaviour
   IEnumerator Drop()
   {
     dropping = true;
-    ShowDepositing();
     yield return new WaitForSeconds(1);
     if (currentLoad > 0)
     {
@@ -222,49 +216,32 @@ public class RTSBots : MonoBehaviour
     dropping = false;
   }
 
-  //EFFECT CONTROLS
-  private void HideEffects()
-  {
-    if (this.transform.Find("Depositing_effect").gameObject.activeSelf)
-      this.transform.Find("Depositing_effect").gameObject.SetActive(false);
-    if (this.transform.Find("Mining_effect").gameObject.activeSelf)
-      this.transform.Find("Mining_effect").gameObject.SetActive(false);
-  }
-  private void ShowMining()
-  {
-    this.transform.Find("Mining_effect").gameObject.SetActive(true);
-  }
-  private void ShowDepositing()
-  {
-    this.transform.Find("Depositing_effect").gameObject.SetActive(true);
-  }
+  // private void colorSwap()
+  // {
+  //   Material renderer = GetComponent<Renderer>().material;
+  //   switch (stateMachine.currentState)
+  //   {
+  //     case StatesAndEvents.States.Mining:
+  //       Material pastelRed = new Material(Shader.Find("Standard"));
+  //       pastelRed.color = new Color(1f, 0.6f, 0.6f);
+  //       renderer.color = pastelRed.color;
+  //       break;
 
-  private void colorSwap()
-  {
-    Material renderer = GetComponent<Renderer>().material;
-    switch (stateMachine.currentState)
-    {
-      case StatesAndEvents.States.Mining:
-        Material pastelRed = new Material(Shader.Find("Standard"));
-        pastelRed.color = new Color(1f, 0.6f, 0.6f);
-        renderer.color = pastelRed.color;
-        break;
-
-      case StatesAndEvents.States.Depositing:
-        Material pastelGreen = new Material(Shader.Find("Standard"));
-        pastelGreen.color = new Color(0.6f, 1f, 0.6f);
-        renderer.color = pastelGreen.color;
-        break;
-      case StatesAndEvents.States.Idle:
-        Material pastelBlue = new Material(Shader.Find("Standard"));
-        pastelBlue.color = new Color(0.6f, 0.6f, 1f);
-        renderer.color = pastelBlue.color;
-        break;
-      case StatesAndEvents.States.Moving:
-        Material pastelYellow = new Material(Shader.Find("Standard"));
-        pastelYellow.color = new Color(1f, 1f, 0.6f);
-        renderer.color = pastelYellow.color;
-        break;
-    }
-  }
+  //     case StatesAndEvents.States.Depositing:
+  //       Material pastelGreen = new Material(Shader.Find("Standard"));
+  //       pastelGreen.color = new Color(0.6f, 1f, 0.6f);
+  //       renderer.color = pastelGreen.color;
+  //       break;
+  //     case StatesAndEvents.States.Idle:
+  //       Material pastelBlue = new Material(Shader.Find("Standard"));
+  //       pastelBlue.color = new Color(0.6f, 0.6f, 1f);
+  //       renderer.color = pastelBlue.color;
+  //       break;
+  //     case StatesAndEvents.States.Moving:
+  //       Material pastelYellow = new Material(Shader.Find("Standard"));
+  //       pastelYellow.color = new Color(1f, 1f, 0.6f);
+  //       renderer.color = pastelYellow.color;
+  //       break;
+  //   }
+  // }
 }
