@@ -59,6 +59,8 @@ public class SelectUnits : MonoBehaviour
     {
       LayerMask layerHit = hit.transform.gameObject.layer;
 
+      Debug.Log(layerHit.value);
+
       switch (layerHit.value)
       {
         case 7: //Deposits

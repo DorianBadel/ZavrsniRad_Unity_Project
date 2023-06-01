@@ -43,7 +43,7 @@ public class RTSBots : MonoBehaviour
   void Update()
   {
     // colorSwap();
-    if (!oreStats.hasOre()) ore = null;
+    if (!oreStats.hasOre()) ore = null; //Doesn't look for ore if no more is left
     switch (stateMachine.currentState)
     {
       case StatesAndEvents.States.Mining:
@@ -52,9 +52,9 @@ public class RTSBots : MonoBehaviour
           stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
           break;
         }
-        if (GetDistanceToClosestVertex(ore, this.transform.position) < minDist)
+        if (CheckDistanceBetween(ore, this.transform.position))
         {
-          CheckDistanceTo(ore);
+          StopMovingIfWithinRange(ore);
           if (currentLoad < maxLoad)
           {
             Mine();
@@ -72,9 +72,9 @@ public class RTSBots : MonoBehaviour
           stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
           break;
         }
-        if (GetDistanceToClosestVertex(deposit, this.transform.position) < minDist)
+        if (CheckDistanceBetween(deposit, this.transform.position))
         {
-          CheckDistanceTo(deposit);
+          StopMovingIfWithinRange(deposit);
           if (currentLoad > 0)
           {
             Deposit();
@@ -85,6 +85,7 @@ public class RTSBots : MonoBehaviour
           }
           else
           {
+            stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
             HideEffects();
           }
         }
@@ -95,7 +96,7 @@ public class RTSBots : MonoBehaviour
         if (Vector3.Distance(this.transform.position, target) < minDist) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
         break;
       case StatesAndEvents.States.Idle:
-        { target = this.transform.position; HideEffects(); }
+        { SetGoal(this.transform.position); HideEffects(); }
         break;
 
       default:
@@ -106,29 +107,18 @@ public class RTSBots : MonoBehaviour
     agent.SetDestination(target);
   }
 
-  void CheckDistanceTo(GameObject goal)
+  void StopMovingIfWithinRange(GameObject goal)
   {
-    if (GetDistanceToClosestVertex(goal, this.transform.position) < minDist - 1)
+    if (CheckDistanceBetween(goal, this.transform.position, minDist / 2))
     {
-      target = this.transform.position;
+      SetGoal(this.transform.position);
     }
   }
 
-  float GetDistanceToClosestVertex(GameObject obj, Vector3 targetPosition)
+  bool CheckDistanceBetween(GameObject obj, Vector3 targetPosition, float minimalDistance = 0.0f)
   {
-    Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
-    Vector3[] vertices = mesh.vertices;
-    float minDistance = float.MaxValue;
-    foreach (Vector3 vertex in vertices)
-    {
-      Vector3 worldVertex = obj.transform.TransformPoint(vertex);
-      float distance = Vector3.Distance(worldVertex, targetPosition);
-      if (distance < minDistance)
-      {
-        minDistance = distance;
-      }
-    }
-    return minDistance;
+    if (minimalDistance == 0.0f) minimalDistance = minDist;
+    return Vector3.Distance(obj.transform.position, targetPosition) < minimalDistance;
   }
 
   private void SetGoal(Vector3 goal)
@@ -235,8 +225,10 @@ public class RTSBots : MonoBehaviour
   //EFFECT CONTROLS
   private void HideEffects()
   {
-    this.transform.Find("Depositing_effect").gameObject.SetActive(false);
-    this.transform.Find("Mining_effect").gameObject.SetActive(false);
+    if (this.transform.Find("Depositing_effect").gameObject.activeSelf)
+      this.transform.Find("Depositing_effect").gameObject.SetActive(false);
+    if (this.transform.Find("Mining_effect").gameObject.activeSelf)
+      this.transform.Find("Mining_effect").gameObject.SetActive(false);
   }
   private void ShowMining()
   {
