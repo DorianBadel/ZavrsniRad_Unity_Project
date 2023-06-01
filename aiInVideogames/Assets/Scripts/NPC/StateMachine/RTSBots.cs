@@ -9,18 +9,12 @@ public class RTSBots : MonoBehaviour
   [Header("GeneralAI")]
   public Vector3 target;
   public UnityEngine.AI.NavMeshAgent agent;
-  private GameObject deposit;
-  private DepositScript depositStats;
-  private OreScript oreStats;
-  private GameObject ore;
+  private GameObject deposit, ore;
+  private StockStats depositStats, resourceStats, thisStorageStats;
 
   [Header("Stats")]
-  public int currentLoad = 0;
-  public int maxLoad = 3;
   public float minDist = 3f;
-
   public StateMachine stateMachine;
-
   public bool wantsToMine = false;
   private bool digging = false;
   private bool dropping = false;
@@ -36,14 +30,15 @@ public class RTSBots : MonoBehaviour
     target = transform.position;
     deposit = GameObject.FindGameObjectWithTag("Deposit");
     ore = GameObject.FindGameObjectWithTag("Ore");
-    depositStats = deposit.GetComponent<DepositScript>();
-    oreStats = ore.GetComponent<OreScript>();
+    depositStats = deposit.GetComponent<StockStats>();
+    resourceStats = ore.GetComponent<StockStats>();
+    thisStorageStats = this.GetComponent<StockStats>();
   }
 
   void Update()
   {
     // colorSwap();
-    if (!oreStats.hasOre()) ore = null; //Doesn't look for ore if no more is left
+    if (!resourceStats.CheckIfNotEmpty()) ore = null; //Doesn't look for ore if no more is left
     switch (stateMachine.currentState)
     {
       case StatesAndEvents.States.Mining:
@@ -56,11 +51,11 @@ public class RTSBots : MonoBehaviour
         if (CheckDistanceBetween(ore, this.gameObject))
         {
           StopMovingIfWithinRange(ore);
-          if (currentLoad < maxLoad)
+          if (thisStorageStats.CheckIfHasSpace())
           {
             Mine();
           }
-          else if (depositStats.hasRoom())
+          else if (depositStats.CheckIfHasSpace())
           {
             goDeposit();
           }
@@ -68,7 +63,7 @@ public class RTSBots : MonoBehaviour
         break;
 
       case StatesAndEvents.States.Depositing:
-        if (!depositStats.hasRoom())
+        if (!depositStats.CheckIfHasSpace())
         {
           stateMachine.makeTransition(StatesAndEvents.Event.ReturnToIdle);
           break;
@@ -77,7 +72,7 @@ public class RTSBots : MonoBehaviour
         if (CheckDistanceBetween(deposit, this.gameObject))
         {
           StopMovingIfWithinRange(deposit);
-          if (currentLoad > 0)
+          if (thisStorageStats.CheckIfNotEmpty())
           {
             Deposit();
           }
@@ -93,7 +88,7 @@ public class RTSBots : MonoBehaviour
         break;
 
       case StatesAndEvents.States.Moving:
-        if (CheckDistanceBetween(this.gameObject, target)) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
+        if (CheckDistanceBetween(this.gameObject, target, minDist / 2)) stateMachine.makeTransition(StatesAndEvents.Event.ReachedDestination);
         break;
       case StatesAndEvents.States.Idle:
         { target = this.transform.position; }
@@ -108,7 +103,7 @@ public class RTSBots : MonoBehaviour
 
   void StopMovingIfWithinRange(GameObject goal)
   {
-    if (CheckDistanceBetween(goal, this.gameObject, minDist / 2))
+    if (CheckDistanceBetween(goal, this.gameObject))
     {
       target = this.transform.position;
     }
@@ -159,7 +154,7 @@ public class RTSBots : MonoBehaviour
 
   public void MineHere(Vector3 goal)
   {
-    if (currentLoad < maxLoad && ore != null)
+    if (thisStorageStats.CheckIfHasSpace() && ore != null)
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToMine);
       target = goal;
@@ -172,7 +167,7 @@ public class RTSBots : MonoBehaviour
 
   public void DepositHere(Vector3 goal)
   {
-    if (currentLoad > 0 && depositStats.hasRoom())
+    if (thisStorageStats.CheckIfNotEmpty() && depositStats.CheckIfHasSpace())
     {
       stateMachine.makeTransition(StatesAndEvents.Event.CommandToDeposit);
       wantsToMine = false;
@@ -190,12 +185,12 @@ public class RTSBots : MonoBehaviour
   {
     digging = true;
     yield return new WaitForSeconds(1);
-    if (currentLoad < maxLoad)
+    if (thisStorageStats.CheckIfHasSpace())
     {
       if (ore != null)
       {
-        oreStats.Mine();
-        currentLoad++;
+        resourceStats.Decrement();
+        thisStorageStats.Increment();
       }
     }
     digging = false;
@@ -205,12 +200,12 @@ public class RTSBots : MonoBehaviour
   {
     dropping = true;
     yield return new WaitForSeconds(1);
-    if (currentLoad > 0)
+    if (thisStorageStats.CheckIfNotEmpty())
     {
-      if (depositStats.hasRoom())
+      if (depositStats.CheckIfHasSpace())
       {
-        depositStats.Deposit();
-        currentLoad--;
+        depositStats.Increment();
+        thisStorageStats.Decrement();
       }
     }
     dropping = false;
