@@ -7,7 +7,10 @@ public class FlockMaster : MonoBehaviour
   public Boid[] allBoids;
   public float flockRange = 5f;
   public float separationDistance = 5f;
+  public float alignmentDistance = 5f;
   public float alignmentPull = 5f;
+  public float cohesionPull = 5f;
+  public float separationPull = 5f;
 
   public Vector3 swimLimit = new Vector3(5, 5, 5);
 
@@ -21,5 +24,12 @@ public class FlockMaster : MonoBehaviour
   void Awake()
   {
     allBoids = FindObjectsOfType<Boid>();
+  }
+
+  void OnDrawGizmos()
+  {
+    // Green
+    Gizmos.color = new Color(0.0f, 1.0f, 0.0f);
+    Gizmos.DrawWireCube(this.transform.position, swimLimit * 2);
   }
 }

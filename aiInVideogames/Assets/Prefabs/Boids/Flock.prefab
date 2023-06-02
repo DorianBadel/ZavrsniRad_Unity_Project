@@ -610,15 +610,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c41e2ad795778b242a21b0d4e63c4f4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allBoids: []
-  flockRange: 6
-  separationDistance: 30
-  alignmentPull: 30
-  swimLimit: {x: 10, y: 10, z: 10}
+  allBoids:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  flockRange: 2
+  separationDistance: 2
+  alignmentPull: 3
+  swimLimit: {x: 5.8, y: 4.81, z: 12.9}
   rotationSpeed: 5
-  minSpeed: 10
-  maxSpeed: 30
-  target: {x: 3.4544704, y: 4.528288, z: -4.6470556}
+  minSpeed: 2
+  maxSpeed: 5
+  target: {x: -646.76575, y: 1.9913468, z: -294.6482}
 --- !u!1 &199294760821206622
 GameObject:
   m_ObjectHideFlags: 0
