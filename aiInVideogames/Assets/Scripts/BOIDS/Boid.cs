@@ -4,97 +4,110 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
-  //TODO
-  //Add a force towards a target
-  //Add a force away from walls
   public List<Boid> flock;
-  public Vector3 calculatedDirection;
 
-  private Transform target = null;
+  private Vector3 target;
 
   private FlockMaster FM;
+  public float speed;
+  private bool outside_limits = false;
+
   void Start()
   {
-    calculatedDirection = transform.forward;
     FM = GetComponentInParent<FlockMaster>();
+    speed = Random.Range(FM.minSpeed, FM.maxSpeed);
 
     if (FM.target != null) target = FM.target;
   }
 
   void Update()
   {
-    calculatedDirection.Normalize();
-    if (FM.allBoids.Length > 0) FindFlock();
+    FindFlock();
 
-    //Apply the 3 rules of Boids
-    Separation();
-    Alignment();
-    Cohesion();
+    Bounds swimmingBounds = new Bounds(FM.transform.position, FM.swimLimit * 2);
+    Vector3 direction = Vector3.zero;
 
-    Move();
+    if (!swimmingBounds.Contains(this.transform.position))
+    {
+      direction = FM.transform.position - this.transform.position;
+      outside_limits = true;
+    }
+    else
+    {
+      outside_limits = false;
+    }
 
+    if (outside_limits)
+    {
+      transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), FM.rotationSpeed * Time.deltaTime);
+    }
+    else
+    {
+      if (Random.Range(0, 100) < 10)
+        speed = Random.Range(FM.minSpeed, FM.maxSpeed);
+      if (Random.Range(0, 100) < 20)
+        if (flock.Count > 0) ApplyRules();
+    }
+    transform.Translate(0, 0, Time.deltaTime * speed);
+  }
+
+  private void ApplyRules()
+  {
+    Vector3 separation = Vector3.zero;
+    Vector3 alignment = Vector3.zero;
+    float cohesion = 0f;
+    foreach (Boid fish in flock)
+    {
+      if (fish == this) return;
+
+      float distance = Vector3.Distance(this.transform.position, fish.transform.position);
+
+      alignment += Alignment(fish, distance);
+      separation += Separation(fish, distance);
+      cohesion += Cohesion(fish, distance);
+    }
+
+    Move(separation, alignment, cohesion);
   }
   //Separation
-  private void Separation()
+  private Vector3 Separation(Boid fish, float distance)
   {
-    Vector3 averagePosition = Vector3.zero;
-    foreach (var fish in flock)
+    if (distance < FM.separationDistance)
     {
-      averagePosition += fish.transform.position;
+      return this.transform.position - fish.transform.position;
     }
-    averagePosition /= flock.Count;
-
-    Vector3 direction = (transform.position - averagePosition).normalized * FM.separationPull;
-    Debug.DrawRay(transform.position, direction, Color.red);
-    calculatedDirection += direction;
-
-
+    return Vector3.zero;
   }
 
   //Alignment
-  private void Alignment()
+  private Vector3 Alignment(Boid fish, float distance)
   {
-    Vector3 averageHeading = Vector3.zero;
-    foreach (var fish in flock)
+    if (distance <= FM.alignmentPull)
     {
-      averageHeading += fish.transform.forward;
+      return fish.transform.forward;
     }
-    averageHeading /= flock.Count;
-    Vector3 direction = (transform.forward + averageHeading).normalized * FM.alignmentPull;
-    Debug.DrawRay(transform.position, direction, Color.blue);
-    calculatedDirection += direction;
-
-
+    return Vector3.zero;
   }
 
   //Cohesion
-  private void Cohesion()
+  private float Cohesion(Boid fish, float distance)
   {
-    Vector3 averagePosition = Vector3.zero;
-    foreach (var fish in flock)
-    {
-      averagePosition += fish.transform.position;
-    }
-    averagePosition /= flock.Count;
-    Vector3 direction = (averagePosition - transform.position).normalized * FM.cohesionPull;
-    Debug.DrawRay(transform.position, direction, Color.yellow);
-    calculatedDirection += direction;
+    Boid temporaryBoid = fish.GetComponent<Boid>();
+    return temporaryBoid.speed;
+
   }
 
-  private void Move()
+  private void Move(Vector3 separation, Vector3 alignment, float cohesion)
   {
-    Vector3 targetDirection = Vector3.zero;
-    if (target != null)
+    alignment = alignment / flock.Count + target - this.transform.position;
+    speed = cohesion / flock.Count;
+
+    Vector3 newDirection = (alignment + separation) - this.transform.position;
+
+    if (newDirection != Vector3.zero)
     {
-      targetDirection = (target.position - transform.position).normalized * FM.targetPull;
+      this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(newDirection), FM.rotationSpeed * Time.deltaTime);
     }
-
-    Vector3 movingDirection = Vector3.Lerp(transform.position, targetDirection, 0.8f) + calculatedDirection;
-
-    Debug.DrawRay(transform.position, movingDirection, Color.magenta);
-
-    transform.position += movingDirection * Time.deltaTime;
-    transform.rotation = Quaternion.LookRotation(movingDirection);
 
   }
 

@@ -6,15 +6,17 @@ public class FlockMaster : MonoBehaviour
 {
   public Boid[] allBoids;
   public float flockRange = 5f;
-  public float separationPull = 5f;
+  public float separationDistance = 5f;
   public float alignmentPull = 5f;
-  public float cohesionPull = 5f;
 
+  public Vector3 swimLimit = new Vector3(5, 5, 5);
 
-  public float targetPull = 5f;
+  public float rotationSpeed = 5f;
+  public float minSpeed = 0f;
+  public float maxSpeed = 5f;
 
   [Header("Set target")]
-  public Transform target;
+  public Vector3 target;
 
   void Awake()
   {

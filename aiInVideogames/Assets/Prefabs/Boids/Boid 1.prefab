@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8439077195277471802}
   - component: {fileID: 8439077195277471797}
   - component: {fileID: 8439077195277471796}
-  - component: {fileID: 8439077195277471803}
+  - component: {fileID: 2632899916522115283}
   m_Layer: 0
-  m_Name: Boid
+  m_Name: Boid 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8439077195277471803
+--- !u!114 &2632899916522115283
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,11 +107,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8439077195277471798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbafd6195d6c6d94989d98a39c27e318, type: 3}
+  m_Script: {fileID: 11500000, guid: 086f596305afb544b8729ebc948f719d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockRange: 5
-  allBoids: []
-  flock: []
-  calculatedDirection: {x: 0, y: 0, z: 0}
-  FM: {fileID: 0}
+  flockManager: {fileID: 0}
