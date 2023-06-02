@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
-  public bool mazeMiniGameFinished = false, navMeshMiniGameFinished = false;
+  public bool mazeMiniGameFinished = false, navMeshMiniGameFinished = false, foxKeyCollected = false;
 
   private GameObject player;
   public bool navmeshWallsMove = false;

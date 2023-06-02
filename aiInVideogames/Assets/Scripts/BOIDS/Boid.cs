@@ -25,13 +25,11 @@ public class Boid : MonoBehaviour
     target = FM.target;
     Vector3 direction = Vector3.zero;
 
-    Bounds swimmingBounds = new Bounds(FM.transform.position, FM.swimLimit * 2);
     if (LeavingBounds())
     {
       direction = FM.transform.position - this.transform.position;
       direction.y = Random.Range(-FM.swimLimit.y + 1, FM.swimLimit.y - 1);
       outside_limits = true;
-      // Debug.DrawRay(transform.position, direction.normalized * 5, Color.red, 0.5f);
     }
     else
     {
@@ -146,9 +144,6 @@ public class Boid : MonoBehaviour
   {
     alignment = alignment / flock.Count + target - this.transform.position;
     speed = cohesion / flock.Count;
-
-    Debug.DrawRay(transform.position, alignment.normalized * 5, Color.green, 1);
-    Debug.DrawRay(transform.position, separation.normalized * 5, Color.blue, 1);
 
     Vector3 newDirection = (alignment + separation);
 

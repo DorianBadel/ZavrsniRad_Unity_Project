@@ -13,7 +13,6 @@ public class FlockMaster : MonoBehaviour
   public float separationPull = 5f;
 
   public Vector3 swimLimit = new Vector3(5, 5, 5);
-
   public float rotationSpeed = 5f;
   public float minSpeed = 0f;
   public float maxSpeed = 5f;
