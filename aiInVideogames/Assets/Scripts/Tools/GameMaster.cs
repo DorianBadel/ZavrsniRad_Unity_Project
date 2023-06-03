@@ -22,17 +22,6 @@ public class GameMaster : MonoBehaviour
 
   void Update()
   {
-    // if (topDownCameraNavMesh.enabled && Input.GetKeyDown(KeyCode.Escape))
-    // {
-    //   FirstPersonCamera();
-    // }
-
-    // if (mazeMiniGameActive && Input.GetKeyDown(KeyCode.F))
-    // {
-    //   if (topDownCameraMaze.enabled) FirstPersonCamera();
-    //   else TopDownMazeCamera();
-    // }
-
     if (Input.GetKeyDown(KeyCode.Escape))
     {
       SetActiveMiniGame("none");
@@ -67,64 +56,5 @@ public class GameMaster : MonoBehaviour
       miniGameController.CompleteNavMesh();
       navMeshMiniGameFinished = true;
     }
-  }
-
-  // public void TopDownMazeCamera()
-  // {
-  //   topDownCameraMaze.enabled = true;
-  //   playerStats.SetFirstPersonControlls(false);
-  //   keyShouldHide = true;
-  //   playerStats.HasKey = false;
-  //   mazeMiniGameActive = true;
-  //   Cursor.lockState = CursorLockMode.Locked;
-  // }
-
-  // public void TopDownNavMeshCamera()
-  // {
-  //   topDownCameraMaze.enabled = false;
-  //   topDownCameraNavMesh.enabled = true;
-  //   playerStats.SetFirstPersonControlls(false);
-  //   playerStats.HasKey = false;
-  //   playerStats.IsDisabled = true;
-  //   mazeMiniGameActive = false;
-  //   navmeshWallsMove = true;
-  //   Cursor.visible = true;
-  //   Cursor.lockState = CursorLockMode.None;
-  // }
-
-  // public void FirstPersonCamera()
-  // {
-  //   topDownCameraMaze.enabled = false;
-  //   topDownCameraNavMesh.enabled = false;
-  //   playerStats.SetFirstPersonControlls(true);
-  //   playerStats.IsDisabled = false; //TODO move to the script that uses it
-  //   Cursor.visible = false;
-  //   Cursor.lockState = CursorLockMode.Locked;
-
-  // }
-
-  // public void PlayerDetected()
-  // {
-  //   //Preventing the player to move
-  //   playerStats.SetDetected(true);
-
-  //   //Move him to first person camera and prevent AI from moving (for effect)
-  //   FirstPersonCamera();
-  //   mazeMiniGameActive = false;
-  //   //TODO UI info
-  //   StartCoroutine("respawn");
-  // }
-
-  public bool ShouldMove(int type)
-  {
-    switch (type)
-    {
-      case 1:
-        return navmeshWallsMove;
-      case 2:
-        // return mazeMiniGameActive;
-        break;
-    }
-    return false;
   }
 }
