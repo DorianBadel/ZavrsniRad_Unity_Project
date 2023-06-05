@@ -12,6 +12,7 @@ TagManager:
   - MazePlayer
   - MazeExit
   - Fish
+  - UIManager
   layers:
   - Default
   - TransparentFX

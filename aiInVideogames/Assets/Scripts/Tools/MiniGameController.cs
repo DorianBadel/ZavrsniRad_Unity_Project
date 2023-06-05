@@ -26,6 +26,9 @@ public class MiniGameController : MonoBehaviour
   public GameObject platformPrefab;
   public RTSBots botScript;
 
+  [Header("[Other] Requirements")]
+  public Hiding hidingWithKey;
+
 
   void Awake()
   {
@@ -127,9 +130,19 @@ public class MiniGameController : MonoBehaviour
     playerDetected = false;
   }
 
+  public void PickUpKey()
+  {
+    mazeKey.AttemptPickUp();
+  }
+
   public void RespawnKey()
   {
     mazeKey.RespawnKey();
+  }
+
+  public bool CanPickUpKey()
+  {
+    return hidingWithKey.CanBePickedUp();
   }
 
   public void CompleteMaze()

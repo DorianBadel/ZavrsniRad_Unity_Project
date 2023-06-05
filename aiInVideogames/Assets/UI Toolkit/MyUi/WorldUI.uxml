@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MyUi/style.uss?fileID=7433441132597879392&amp;guid=15668a570de9606429d02b019fb721e8&amp;type=3#style" />
+    <ui:VisualElement name="Container" style="justify-content: center; width: 100%; height: 100%; padding-left: 5%; padding-right: 5%; padding-top: 5%; padding-bottom: 5%; background-color: rgba(0, 0, 0, 0); align-items: stretch; display: flex; opacity: 1; visibility: visible;">
+        <ui:GroupBox style="position: absolute; right: 0; bottom: 0; justify-content: space-between; align-items: flex-end;">
+            <ui:Toggle label="Collect castle key from hiding fox" value="true" style="justify-content: flex-end; align-items: center; -unity-text-align: upper-right; position: relative; right: auto; color: rgb(229, 227, 227); transition-property: opacity; transition-duration: 2s; transition-timing-function: ease-out-bounce; transition-delay: 0.5s; background-color: rgba(255, 255, 255, 0);" />
+            <ui:Toggle label="Solve painting maze" style="justify-content: flex-end; align-items: center; -unity-text-align: upper-right; position: relative; right: auto; color: rgb(229, 228, 228); transition-property: opacity; transition-timing-function: ease-out-bounce; transition-duration: 2s;" />
+            <ui:Toggle label="Get key from table" style="justify-content: flex-end; align-items: center; -unity-text-align: upper-right; position: relative; right: auto; color: rgb(229, 228, 228); transition-property: opacity; transition-duration: 2s; transition-delay: 0.5s; transition-timing-function: ease-out-bounce;" />
+        </ui:GroupBox>
+        <ui:VisualElement style="position: absolute; top: 20px; transform-origin: center; translate: 0 0; left: 50%; right: 50%;">
+            <ui:Label text="You have succesfully collected a key from the fox!" display-tooltip-when-elided="true" name="SuccessMessage" style="align-items: center; -unity-text-align: upper-center; color: rgb(135, 226, 147); display: flex;" />
+            <ui:Label text="Try beating the maze again, you can do it!" display-tooltip-when-elided="true" name="FailiureMessage" style="align-items: center; -unity-text-align: upper-center; color: rgb(226, 135, 141);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

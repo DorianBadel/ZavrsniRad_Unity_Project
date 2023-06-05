@@ -37,25 +37,20 @@ public class Hiding : MonoBehaviour
   {
     Vector3 distanceToPlayer = player.transform.position - this.transform.position;
 
-    if (!playerStats.HasKey && distanceToPlayer.magnitude <= pickupDistance && Input.GetKeyDown(KeyCode.E))
-    {
-      Instantiate(destroyEffect, this.transform.position, Quaternion.identity);
-      playerStats.PickUpKey();
-      gameMaster.keyShouldHide = false;
-    }
-
-
     if (!gameMaster.keyShouldHide && distanceToPlayer.magnitude >= pickupDistance) MoveToward(player.transform.position);
-
-    if (playerStats.HasKey && Input.GetKeyDown(KeyCode.C))
-    {
-      playerStats.DropKey();
-      gameMaster.ShouldKeyHide(true);
-    }
-
 
     if (gameMaster.keyShouldHide && CanSeeTarget())
       Hide();
+  }
+
+  public bool CanBePickedUp()
+  {
+    if (Vector3.Distance(player.transform.position, this.transform.position) <= pickupDistance)
+    {
+      Instantiate(destroyEffect, this.transform.position, Quaternion.identity);
+      return true;
+    }
+    return false;
   }
 
   private void Hide()

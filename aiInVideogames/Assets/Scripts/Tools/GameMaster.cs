@@ -11,6 +11,7 @@ public class GameMaster : MonoBehaviour
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
   private MiniGameController miniGameController;
+  private UI_Manager uiManager;
 
   void Awake()
   {
@@ -18,17 +19,65 @@ public class GameMaster : MonoBehaviour
     playerStats = player.GetComponent<PlayerStats>();
 
     miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
+    uiManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UI_Manager>();
   }
 
-  void Update()
+  void Start()
   {
-    if (Input.GetKeyDown(KeyCode.Escape))
-    {
-      SetActiveMiniGame("none");
-    }
+    PauseGame();
+  }
 
-    if (playerStats.HasKey && Input.GetKeyDown(KeyCode.Q))
-      miniGameController.RespawnKey();
+  public void PlayerDropKey(string miniGame)
+  {
+    if (!playerStats.HasKey) return;
+
+    switch (miniGame)
+    {
+      case "Maze":
+        playerStats.DropKey();
+        miniGameController.RespawnKey();
+        break;
+      case "none":
+        playerStats.DropKey();
+        ShouldKeyHide(true);
+        break;
+    }
+  }
+
+  public void PlayerPickUpKey(string miniGame)
+  {
+    if (playerStats.HasKey) return;
+
+    switch (miniGame)
+    {
+      case "Maze":
+        miniGameController.PickUpKey();
+        break;
+      case "none":
+        playerStats.PickUpKey();
+        ShouldKeyHide(false);
+        break;
+    }
+  }
+
+  public void OpenMenu()
+  {
+    PauseGame();
+    uiManager.ToggleMenu(UI_Manager.MenuType.InGameMenu, true);
+  }
+
+  public void StartGame()
+  {
+    playerStats.IsInMenu = false;
+    Cursor.lockState = CursorLockMode.Locked;
+    Cursor.visible = false;
+  }
+
+  public void PauseGame()
+  {
+    playerStats.IsInMenu = true;
+    Cursor.lockState = CursorLockMode.None;
+    Cursor.visible = true;
   }
 
   public void SetActiveMiniGame(string miniGame)

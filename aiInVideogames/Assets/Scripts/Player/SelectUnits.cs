@@ -12,24 +12,15 @@ public class SelectUnits : MonoBehaviour
 
   private RaycastHit hit;
 
+  private MiniGameController miniGameController;
+
+
   void Start()
   {
     Instance = this;
   }
 
-  void Update()
-  {
-    if (Input.GetMouseButtonDown(0))
-    {
-      HandleUnitSelection();
-    }
-    if (Input.GetMouseButtonDown(1))
-    {
-      HandleUnitCommand();
-    }
-  }
-
-  private void HandleUnitSelection()
+  public void HandleUnitSelection()
   {
     MousePosition = Input.mousePosition;
 
@@ -50,7 +41,7 @@ public class SelectUnits : MonoBehaviour
     }
   }
 
-  private void HandleUnitCommand()
+  public void HandleUnitCommand()
   {
     MousePosition = Input.mousePosition;
 

@@ -1,0 +1,24 @@
+#container {
+    display: flex;
+    align-self: center;
+    width: 90%;
+    background-color: red;
+    height: auto;
+    align-items: center;
+}
+
+.header {
+    width: 90%;
+}
+
+Toggle .unity-toggle__checkmark {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0);
+    border-color: white;
+    border-width: 2px;
+}
+
+Toggle:checked .unity-toggle__checkmark {
+    background-color: rgba(253, 242, 242, 0);
+    background-image: url('project://database/Assets/UI%20Toolkit/MyUi/checked.png?fileID=2800000&guid=d84445dc77e638645a6c0dd32065208c&type=3#checked');
+}
