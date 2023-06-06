@@ -26,4 +26,7 @@
             <ui:Label text="You have succesfully collected a key from the fox!" display-tooltip-when-elided="true" name="WarningMessage" style="align-items: center; -unity-text-align: upper-center; color: rgb(226, 223, 135); display: flex;" />
         </ui:VisualElement>
     </ui:VisualElement>
+    <ui:VisualElement name="inputHintsContainer" style="width: 100%; height: 100%; position: absolute; display: none;">
+        <ui:Label text="Press &quot;E&quot; to interact" display-tooltip-when-elided="true" name="InputHint" style="position: absolute; left: 20px; right: auto; bottom: 20px; color: rgba(255, 255, 255, 255); -unity-font-style: bold;" />
+    </ui:VisualElement>
 </ui:UXML>

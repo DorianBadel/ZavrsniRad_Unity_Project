@@ -15,14 +15,14 @@ public class SelectionBox : MonoBehaviour
 
   public SelectionType selectionType;
 
-  private void Start()
-  {
-  }
-
   private void OnTriggerEnter(Collider collider)
   {
-    if (collider.CompareTag("Player") && selectionType != SelectionType.MazeCompletion ||
-    collider.CompareTag("MazePlayer") && selectionType == SelectionType.MazeCompletion)
+    if (collider.CompareTag("Player") && selectionType != SelectionType.MazeCompletion)
+    {
+      GameMaster.Instance.DisplayHint("Press E to enter " + selectionType.ToString() + " mini game.");
+      playerIsInTrigger = true;
+    }
+    else if (collider.CompareTag("MazePlayer") && selectionType == SelectionType.MazeCompletion)
     {
       playerIsInTrigger = true;
     }
@@ -42,6 +42,7 @@ public class SelectionBox : MonoBehaviour
       if (selectionType == SelectionType.MazeCompletion)
       {
         GameMaster.Instance.CompleteMiniGame("Maze");
+        return;
       }
       if (Input.GetKeyDown(KeyCode.E))
       {

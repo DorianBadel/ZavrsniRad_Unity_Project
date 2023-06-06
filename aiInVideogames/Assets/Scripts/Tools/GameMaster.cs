@@ -110,7 +110,16 @@ public class GameMaster : MonoBehaviour
     if (miniGame != "none")
     {
       playerStats.IsInMiniGame = true;
-      uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, false);
+      if (miniGame == "Maze")
+      {
+        uiManager.DisplayMessage(UI_Manager.MessageType.Warning, "You have to find the key in the labyrinth, and bring it to the rightmost point of the painting!");
+        DisplayHint("Use WASD to move, and E to pick up the key.");
+      }
+      else if (miniGame == "NavMesh")
+      {
+        uiManager.DisplayMessage(UI_Manager.MessageType.Warning, "You have to command the glass to gather the liquid from one jar and carry it to the other jar! Once the second jar is full you will complete the mini game!");
+        DisplayHint("Left click on the glass to select it, right click to issue a command to it.");
+      }
     }
     else
     {
@@ -121,16 +130,24 @@ public class GameMaster : MonoBehaviour
     miniGameController.SetActiveMiniGame(miniGame);
   }
 
+  public void DisplayHint(string hint)
+  {
+    uiManager.SetHint(hint);
+    uiManager.DisplayHint();
+  }
+
   public void CompleteMiniGame(string miniGame)
   {
-    if (miniGame == "Maze" && playerStats.HasKey)
+    if (miniGame == "Maze")
     {
       miniGameController.CompleteMaze();
+      uiManager.DisplayMessage(UI_Manager.MessageType.Success, "You have completed the maze mini game! Congratulations!");
       mazeMiniGameFinished = true;
     }
     if (miniGame == "NavMesh")
     {
       miniGameController.CompleteNavMesh();
+      uiManager.DisplayMessage(UI_Manager.MessageType.Success, "You have completed the navigation mesh mini game! Congratulations!");
       navMeshMiniGameFinished = true;
     }
     DisplayCastleToggles();
@@ -151,7 +168,6 @@ public class GameMaster : MonoBehaviour
     {
       uiManager.DisplayMessage(UI_Manager.MessageType.Success, "You have completed all the mini games, you can now enter the last door!");
       uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, false);
-      return;
     }
     castleToggles[0].value = mazeMiniGameFinished;
     castleToggles[1].value = navMeshMiniGameFinished;

@@ -39,6 +39,11 @@ public class Hiding : MonoBehaviour
 
     if (GameMaster.Instance.keyShouldHide && CanSeeTarget())
       Hide();
+
+    if (distanceToPlayer.magnitude < pickupDistance && GameMaster.Instance.keyShouldHide)
+    {
+      GameMaster.Instance.DisplayHint("Press E to pick up key");
+    }
   }
 
   public bool CanBePickedUp()

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -5,13 +6,14 @@ public class UI_Manager : MonoBehaviour
 {
 
   VisualElement mainMenu;
-  public VisualElement mainMenuContainer, inGameMenuContainer, gameUiContainer;
+  public VisualElement mainMenuContainer, inGameMenuContainer, gameUiContainer, hintContainer;
 
   public enum MenuType
   {
     MainMenu,
     InGameMenu,
-    GameUI
+    GameUI,
+    Hint
   }
 
   public enum MessageType
@@ -38,7 +40,13 @@ public class UI_Manager : MonoBehaviour
     mainMenuContainer = mainMenu.Q("mainMenuContainer");
     inGameMenuContainer = mainMenu.Q<VisualElement>("inGameMenuContainer");
     gameUiContainer = mainMenu.Q<VisualElement>("gameUiContainer");
+    hintContainer = mainMenu.Q<VisualElement>("inputHintsContainer");
 
+    AssignButtons();
+  }
+
+  private void AssignButtons()
+  {
     Button btnStartGame = mainMenu.Q<Button>("btnStartGame");
     Button btnQuitGame = mainMenu.Q<Button>("btnLeaveDesktop");
 
@@ -107,6 +115,16 @@ public class UI_Manager : MonoBehaviour
           gameUiContainer.style.display = DisplayStyle.None;
         }
         break;
+      case MenuType.Hint:
+        if (on)
+        {
+          hintContainer.style.display = DisplayStyle.Flex;
+        }
+        else
+        {
+          hintContainer.style.display = DisplayStyle.None;
+        }
+        break;
       default:
         break;
     }
@@ -166,5 +184,28 @@ public class UI_Manager : MonoBehaviour
       toggle1.label = toggles[0].label;
       toggle1.value = toggles[0].value;
     }
+  }
+
+  public void SetHint(string hint)
+  {
+    mainMenu.Q<Label>("InputHint").text = hint;
+  }
+
+  public bool hintShowing = false;
+
+  public void DisplayHint()
+  {
+    if (!hintShowing)
+    {
+      hintShowing = true;
+      StartCoroutine(ShowHint());
+    }
+  }
+  IEnumerator ShowHint()
+  {
+    ToggleMenu(MenuType.Hint, true);
+    yield return new WaitForSeconds(4f);
+    ToggleMenu(MenuType.Hint, false);
+    hintShowing = false;
   }
 }
