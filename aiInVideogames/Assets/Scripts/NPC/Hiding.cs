@@ -9,7 +9,6 @@ public class Hiding : MonoBehaviour
   //FOUND BUGS -- Key doesnt run away on Q press
   // -- Key doesn't stop following on entering the maze
   private GameObject player;
-  private GameMaster gameMaster;
   private PlayerStats playerStats;
   private static GameObject[] obstacles;
 
@@ -28,7 +27,6 @@ public class Hiding : MonoBehaviour
     obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
     this.transform.position = startingLocation.position;
     player = GameObject.FindGameObjectWithTag("Player");
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
     playerStats = player.GetComponent<PlayerStats>();
   }
 
@@ -37,9 +35,9 @@ public class Hiding : MonoBehaviour
   {
     Vector3 distanceToPlayer = player.transform.position - this.transform.position;
 
-    if (!gameMaster.keyShouldHide && distanceToPlayer.magnitude >= pickupDistance) MoveToward(player.transform.position);
+    if (!GameMaster.Instance.keyShouldHide && distanceToPlayer.magnitude >= pickupDistance) MoveToward(player.transform.position);
 
-    if (gameMaster.keyShouldHide && CanSeeTarget())
+    if (GameMaster.Instance.keyShouldHide && CanSeeTarget())
       Hide();
   }
 

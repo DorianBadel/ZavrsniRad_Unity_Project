@@ -10,7 +10,6 @@ public class DoorScript : MonoBehaviour
     PoolDoor
   }
   public DoorType doorType;
-  private GameMaster gameMaster;
   private GameObject player;
 
   private Quaternion initialRotation;
@@ -19,7 +18,6 @@ public class DoorScript : MonoBehaviour
 
   void Awake()
   {
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
     player = GameObject.FindGameObjectWithTag("Player");
   }
 
@@ -35,13 +33,13 @@ public class DoorScript : MonoBehaviour
     switch (doorType)
     {
       case DoorType.CastleDoor:
-        if (gameMaster.foxKeyCollected)
+        if (GameMaster.Instance.foxKeyCollected)
         {
           UnlockedDoorOpen();
         }
         break;
       case DoorType.PoolDoor:
-        if (gameMaster.mazeMiniGameFinished && gameMaster.navMeshMiniGameFinished)
+        if (GameMaster.Instance.mazeMiniGameFinished && GameMaster.Instance.navMeshMiniGameFinished)
         {
           UnlockedDoorOpen();
         }

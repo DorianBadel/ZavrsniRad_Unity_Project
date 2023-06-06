@@ -5,7 +5,6 @@ using UnityEngine;
 public class SelectionBox : MonoBehaviour
 {
   private bool playerIsInTrigger = false;
-  private GameMaster gameMaster;
 
   public enum SelectionType
   {
@@ -18,7 +17,6 @@ public class SelectionBox : MonoBehaviour
 
   private void Start()
   {
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
   }
 
   private void OnTriggerEnter(Collider collider)
@@ -43,17 +41,17 @@ public class SelectionBox : MonoBehaviour
     {
       if (selectionType == SelectionType.MazeCompletion)
       {
-        gameMaster.CompleteMiniGame("Maze");
+        GameMaster.Instance.CompleteMiniGame("Maze");
       }
       if (Input.GetKeyDown(KeyCode.E))
       {
         switch (selectionType)
         {
           case SelectionType.Maze:
-            gameMaster.SetActiveMiniGame("Maze");
+            GameMaster.Instance.SetActiveMiniGame("Maze");
             break;
           case SelectionType.NavMesh:
-            gameMaster.SetActiveMiniGame("NavMesh");
+            GameMaster.Instance.SetActiveMiniGame("NavMesh");
             break;
         }
       }

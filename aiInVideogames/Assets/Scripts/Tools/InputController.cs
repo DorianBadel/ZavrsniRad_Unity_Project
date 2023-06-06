@@ -5,12 +5,10 @@ using UnityEngine;
 public class InputController : MonoBehaviour
 {
   MiniGameController miniGameController;
-  GameMaster gameMaster;
 
   void Awake()
   {
     miniGameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MiniGameController>();
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
   }
 
   void Update()
@@ -33,7 +31,7 @@ public class InputController : MonoBehaviour
   {
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-      miniGameController.SetActiveMiniGame("none");
+      GameMaster.Instance.SetActiveMiniGame("none");
     }
 
     if (Input.GetMouseButtonDown(0))
@@ -52,17 +50,17 @@ public class InputController : MonoBehaviour
   {
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-      miniGameController.SetActiveMiniGame("none");
+      GameMaster.Instance.SetActiveMiniGame("none");
     }
 
     if (Input.GetKeyDown(KeyCode.E))
     {
-      gameMaster.PlayerPickUpKey("Maze");
+      GameMaster.Instance.PlayerPickUpKey("Maze");
     }
 
     if (Input.GetKeyDown(KeyCode.Q))
     {
-      gameMaster.PlayerDropKey("Maze");
+      GameMaster.Instance.PlayerDropKey("Maze");
     }
 
   }
@@ -71,20 +69,20 @@ public class InputController : MonoBehaviour
   {
     if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X))
     {
-      gameMaster.OpenMenu();
+      GameMaster.Instance.OpenMenu();
     }
 
     if (Input.GetKeyDown(KeyCode.E))
     {
       if (miniGameController.CanPickUpKey())
-        gameMaster.PlayerPickUpKey("none");
+        GameMaster.Instance.PlayerPickUpKey("none");
 
       //E is also used for selection boxes
     }
 
     if (Input.GetKeyDown(KeyCode.Q))
     {
-      gameMaster.PlayerDropKey("none");
+      GameMaster.Instance.PlayerDropKey("none");
     }
 
   }

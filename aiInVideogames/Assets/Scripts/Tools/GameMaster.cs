@@ -7,14 +7,18 @@ public class GameMaster : MonoBehaviour
   public bool mazeMiniGameFinished = false, navMeshMiniGameFinished = false, foxKeyCollected = false;
 
   private GameObject player;
+  public static GameMaster Instance { get; private set; }
   public bool navmeshWallsMove = false;
   public bool keyShouldHide = true;
   private PlayerStats playerStats;
   private MiniGameController miniGameController;
   private UI_Manager uiManager;
 
+  private UI_Manager.ToggleClass[] foxKeyToggle, castleToggles;
+
   void Awake()
   {
+    Instance = this;
     player = GameObject.FindGameObjectWithTag("Player");
     playerStats = player.GetComponent<PlayerStats>();
 
@@ -25,6 +29,18 @@ public class GameMaster : MonoBehaviour
   void Start()
   {
     PauseGame();
+  }
+
+  void OnEnable()
+  {
+    foxKeyToggle = new UI_Manager.ToggleClass[1] {
+      new UI_Manager.ToggleClass { label = "Get key from fox", value = false }
+    };
+    castleToggles = new UI_Manager.ToggleClass[2] {
+      new UI_Manager.ToggleClass { label = "Get key from picture frame labyrinth", value = false },
+      new UI_Manager.ToggleClass { label = "Get key from table mini game", value = false }
+    };
+
   }
 
   public void PlayerDropKey(string miniGame)
@@ -39,7 +55,7 @@ public class GameMaster : MonoBehaviour
         break;
       case "none":
         playerStats.DropKey();
-        ShouldKeyHide(true);
+        keyShouldHide = true;
         break;
     }
   }
@@ -55,7 +71,11 @@ public class GameMaster : MonoBehaviour
         break;
       case "none":
         playerStats.PickUpKey();
-        ShouldKeyHide(false);
+        foxKeyCollected = true;
+        keyShouldHide = false;
+        foxKeyToggle[0].value = true;
+        uiManager.DisplayMessage(UI_Manager.MessageType.Success, "You found the key! Now you can enter the castle!");
+        uiManager.DisplayToggles(foxKeyToggle);
         break;
     }
   }
@@ -63,6 +83,7 @@ public class GameMaster : MonoBehaviour
   public void OpenMenu()
   {
     PauseGame();
+    uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, false);
     uiManager.ToggleMenu(UI_Manager.MenuType.InGameMenu, true);
   }
 
@@ -71,6 +92,10 @@ public class GameMaster : MonoBehaviour
     playerStats.IsInMenu = false;
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
+
+    uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, true);
+    uiManager.DisplayMessage(UI_Manager.MessageType.Warning, "One of the hiding foxes has the key to the castle, find it and grab it to enter the castle!");
+    uiManager.DisplayToggles(foxKeyToggle);
   }
 
   public void PauseGame()
@@ -82,15 +107,18 @@ public class GameMaster : MonoBehaviour
 
   public void SetActiveMiniGame(string miniGame)
   {
-    if (miniGame != "none") playerStats.IsInMiniGame = true;
-    else playerStats.IsInMiniGame = false;
+    if (miniGame != "none")
+    {
+      playerStats.IsInMiniGame = true;
+      uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, false);
+    }
+    else
+    {
+      playerStats.IsInMiniGame = false;
+      uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, true);
+    }
 
     miniGameController.SetActiveMiniGame(miniGame);
-  }
-
-  public void ShouldKeyHide(bool answer)
-  {
-    keyShouldHide = answer;
   }
 
   public void CompleteMiniGame(string miniGame)
@@ -105,5 +133,29 @@ public class GameMaster : MonoBehaviour
       miniGameController.CompleteNavMesh();
       navMeshMiniGameFinished = true;
     }
+    DisplayCastleToggles();
+  }
+
+  public void CastleEnteredTrigger()
+  {
+    keyShouldHide = true;
+    foxKeyCollected = false;
+    playerStats.DropKey();
+    uiManager.DisplayMessage(UI_Manager.MessageType.Success, "Congratulations, now you have to solve two puzzles. They are on the first floor of the castle.");
+    DisplayCastleToggles();
+  }
+
+  private void DisplayCastleToggles()
+  {
+    if (mazeMiniGameFinished && navMeshMiniGameFinished)
+    {
+      uiManager.DisplayMessage(UI_Manager.MessageType.Success, "You have completed all the mini games, you can now enter the last door!");
+      uiManager.ToggleMenu(UI_Manager.MenuType.GameUI, false);
+      return;
+    }
+    castleToggles[0].value = mazeMiniGameFinished;
+    castleToggles[1].value = navMeshMiniGameFinished;
+
+    uiManager.DisplayToggles(castleToggles);
   }
 }
