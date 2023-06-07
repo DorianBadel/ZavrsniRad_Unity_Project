@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class Hiding : MonoBehaviour
 {
-  //TODO: reformat code to make more sense
-  //FOUND BUGS -- Key doesnt run away on Q press
-  // -- Key doesn't stop following on entering the maze
   private GameObject player;
   private PlayerStats playerStats;
   private static GameObject[] obstacles;
@@ -16,11 +13,15 @@ public class Hiding : MonoBehaviour
   public Transform startingLocation;
   public UnityEngine.AI.NavMeshAgent agent;
   public ParticleSystem destroyEffect;
+  public ParticleSystem shiningEffect;
 
   [Header("Adjustable variables")]
   public float pickupDistance = 2f;
   public float hidingDistance = 5f;
   public int type = 0;
+  public bool isKeyCarrier = false;
+
+  private Animator animator;
 
   void Start()
   {
@@ -28,21 +29,31 @@ public class Hiding : MonoBehaviour
     this.transform.position = startingLocation.position;
     player = GameObject.FindGameObjectWithTag("Player");
     playerStats = player.GetComponent<PlayerStats>();
+    animator = this.GetComponentInChildren<Animator>();
+    if (isKeyCarrier) Instantiate(shiningEffect, this.transform.position, Quaternion.identity, this.transform);
   }
 
 
   void Update()
   {
-    Vector3 distanceToPlayer = player.transform.position - this.transform.position;
-
-    if (!GameMaster.Instance.keyShouldHide && distanceToPlayer.magnitude >= pickupDistance) MoveToward(player.transform.position);
-
     if (GameMaster.Instance.keyShouldHide && CanSeeTarget())
       Hide();
+    Animate();
 
+    if (!isKeyCarrier) return;
+    Vector3 distanceToPlayer = player.transform.position - this.transform.position;
+    if (!GameMaster.Instance.keyShouldHide && distanceToPlayer.magnitude >= pickupDistance) MoveToward(player.transform.position);
     if (distanceToPlayer.magnitude < pickupDistance && GameMaster.Instance.keyShouldHide)
     {
       GameMaster.Instance.DisplayHint("Press E to pick up key");
+    }
+  }
+
+  private void Animate()
+  {
+    if (animator != null)
+    {
+      animator.SetFloat("velocity", this.agent.velocity.magnitude);
     }
   }
 
@@ -72,6 +83,7 @@ public class Hiding : MonoBehaviour
 
   private void MoveToward(Vector3 target)
   {
+    this.transform.LookAt(target);
     agent.SetDestination(target);
   }
   private bool CanSeeTarget()
@@ -79,9 +91,10 @@ public class Hiding : MonoBehaviour
     RaycastHit rayHit;
     Vector3 directionToPlayer = player.transform.position - this.transform.position;
     Ray newRay = new Ray(this.transform.position, directionToPlayer);
+    Debug.DrawRay(this.transform.position, directionToPlayer, Color.magenta, 2f);
 
 
-    if (Physics.Raycast(newRay, out rayHit))
+    if (Physics.Raycast(newRay, out rayHit, 1000f, ~LayerMask.GetMask("Ignore Raycast")))
     {
       if (rayHit.transform.gameObject.tag == "Player")
         return true;
@@ -122,7 +135,7 @@ public class Hiding : MonoBehaviour
   // //TODO: If you want KNN material
   private Vector3 FindClosestHidingSpotUsingKNN()
   {
-    int k = 5; // number of nearest neighbors
+    int k = 4; // number of nearest neighbors
     List<Vector3> hidingSpots = new List<Vector3>();
     List<float> distances = new List<float>();
 
