@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class UI_Manager : MonoBehaviour
@@ -66,8 +67,7 @@ public class UI_Manager : MonoBehaviour
     };
     btnReturnToMenu.clicked += () =>
     {
-      ToggleMenu(MenuType.InGameMenu, false);
-      ToggleMenu(MenuType.MainMenu, true);
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     };
     btnQuitGame.clicked += () =>
     {
