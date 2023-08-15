@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+//Kôd pripada Sebastian-u Lague-u
 public class TextureGenerator
 {
   public static Texture2D TextureFromColourMap(Color[] colourMap, int width, int height)

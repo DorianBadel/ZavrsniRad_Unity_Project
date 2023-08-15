@@ -10,17 +10,22 @@ public class SelectionBox : MonoBehaviour
   {
     Maze,
     MazeCompletion,
-    NavMesh
+    NavMesh,
+    CastleEntrance
   }
 
   public SelectionType selectionType;
 
   private void OnTriggerEnter(Collider collider)
   {
-    if (collider.CompareTag("Player") && selectionType != SelectionType.MazeCompletion)
+    if (collider.CompareTag("Player") && selectionType == SelectionType.Maze || selectionType == SelectionType.NavMesh)
     {
       GameMaster.Instance.DisplayHint("Press E to enter " + selectionType.ToString() + " mini game.");
       playerIsInTrigger = true;
+    }
+    else if (collider.CompareTag("Player") && selectionType == SelectionType.CastleEntrance)
+    {
+      GameMaster.Instance.CastleEnteredTrigger();
     }
     else if (collider.CompareTag("MazePlayer") && selectionType == SelectionType.MazeCompletion)
     {
