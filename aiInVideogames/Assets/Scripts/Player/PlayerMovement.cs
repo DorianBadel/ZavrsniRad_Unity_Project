@@ -26,13 +26,12 @@ public class PlayerMovement : MonoBehaviour
     charController = GetComponent<CharacterController>();
     stats = GetComponent<PlayerStats>();
     characterCamera = Camera.main;
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false;
   }
 
   void Update()
   {
-    if (stats.IsInMiniGame) return;
+    if (stats.IsInMiniGame || stats.IsInMenu) return;
+
 
     FirstPersonMovement();
     HandleFalling();

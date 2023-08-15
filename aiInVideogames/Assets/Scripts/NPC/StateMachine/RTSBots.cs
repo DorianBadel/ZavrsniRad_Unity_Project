@@ -18,7 +18,6 @@ public class RTSBots : MonoBehaviour
   public bool wantsToMine = false;
   private bool digging = false;
   private bool dropping = false;
-  private GameMaster gameMaster;
   private Vector3 initialPosition;
 
 
@@ -36,7 +35,6 @@ public class RTSBots : MonoBehaviour
     depositStats = deposit.GetComponent<StockStats>();
     resourceStats = ore.GetComponent<StockStats>();
     thisStorageStats = this.GetComponent<StockStats>();
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
   }
 
   void Update()
@@ -46,7 +44,7 @@ public class RTSBots : MonoBehaviour
 
     if (!depositStats.CheckIfHasSpace())
     {
-      gameMaster.CompleteMiniGame("NavMesh");
+      GameMaster.Instance.CompleteMiniGame("NavMesh");
     }
     switch (stateMachine.currentState)
     {

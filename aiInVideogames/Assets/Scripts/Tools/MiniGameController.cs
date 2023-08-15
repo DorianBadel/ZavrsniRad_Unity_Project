@@ -12,7 +12,6 @@ public class MiniGameController : MonoBehaviour
   }
   private ActiveMiniGameType activeMiniGame;
   private CameraController cameraController;
-  private GameMaster gameMaster;
 
   private bool playerDetected = false;
   private MazeKey mazeKey;
@@ -26,13 +25,15 @@ public class MiniGameController : MonoBehaviour
   public GameObject platformPrefab;
   public RTSBots botScript;
 
+  [Header("[Other] Requirements")]
+  public Hiding hidingWithKey;
+
 
   void Awake()
   {
     // Getting controllers
     activeMiniGame = ActiveMiniGameType.none;
     cameraController = GameObject.FindGameObjectWithTag("GameController").GetComponent<CameraController>();
-    gameMaster = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMaster>();
 
     // Getting maze key
     mazeKey = GameObject.FindGameObjectWithTag("MazeKey").GetComponent<MazeKey>();
@@ -113,7 +114,7 @@ public class MiniGameController : MonoBehaviour
   {
     if (activeMiniGame == ActiveMiniGameType.Maze)
     {
-      gameMaster.SetActiveMiniGame("none");
+      GameMaster.Instance.SetActiveMiniGame("none");
       playerDetected = detected;
     }
     StartCoroutine(ResetPlayerDetected(player));
@@ -127,9 +128,19 @@ public class MiniGameController : MonoBehaviour
     playerDetected = false;
   }
 
+  public void PickUpKey()
+  {
+    mazeKey.AttemptPickUp();
+  }
+
   public void RespawnKey()
   {
     mazeKey.RespawnKey();
+  }
+
+  public bool CanPickUpKey()
+  {
+    return hidingWithKey.CanBePickedUp();
   }
 
   public void CompleteMaze()
@@ -147,7 +158,7 @@ public class MiniGameController : MonoBehaviour
     yield return new WaitForSeconds(2);
     player.transform.position = mazeRespawnPoint.position;
     RespawnKey();
-    gameMaster.SetActiveMiniGame("none");
+    GameMaster.Instance.SetActiveMiniGame("none");
     completeCoroutineRunning = false;
   }
 
@@ -186,7 +197,7 @@ public class MiniGameController : MonoBehaviour
     //Display message on screen
     yield return new WaitForSeconds(2);
     botScript.Reset();
-    gameMaster.SetActiveMiniGame("none");
+    GameMaster.Instance.SetActiveMiniGame("none");
     Vector3 oldPosition = new Vector3(platformPrefab.transform.position.x, platformPrefab.transform.position.y, platformPrefab.transform.position.z + platformPrefab.transform.localScale.z);
     platformPrefab.transform.position = Vector3.Lerp(platformPrefab.transform.position, newPosition, 0.5f);
     completeCoroutineRunning = false;

@@ -12,6 +12,7 @@ public class PlayerStats : MonoBehaviour
   public bool HasKey = false;
   public bool IsUnderwater = false;
   public bool IsInMiniGame = false;
+  public bool IsInMenu = false;
 
   public void PickUpKey()
   {

@@ -5,25 +5,29 @@ using UnityEngine;
 public class HideInDistance : MonoBehaviour
 {
   private GameObject player;
+  private GameObject firstChild;
 
   public float distanceToHide = 500f;
 
   void Start()
   {
     player = GameObject.FindGameObjectWithTag("Player");
-    StartCoroutine(Hide());
 
+    if (this.transform.childCount > 0)
+      firstChild = this.transform.GetChild(0).gameObject;
+    else Debug.Log("Chunks must have at least one child!");
+    StartCoroutine(Hide());
   }
 
   IEnumerator Hide()
   {
     if (Vector3.Distance(player.transform.position, transform.position) > distanceToHide)
     {
-      this.gameObject.SetActive(false);
+      firstChild.SetActive(false);
     }
     else
     {
-      this.gameObject.SetActive(true);
+      firstChild.SetActive(true);
     }
     yield return new WaitForSeconds(0.1f);
     StartCoroutine(Hide());

@@ -19,13 +19,9 @@ public class MazeKey : MonoBehaviour
     player = GameObject.FindGameObjectWithTag("MazePlayer");
   }
 
-  void Update()
+  public void AttemptPickUp()
   {
-    //TODO seperate this in another script used for all keys
-    Vector3 distanceToPlayer = player.transform.position - transform.position;
-    bool playerHasKey = playerStats.HasKey;
-
-    if (!playerHasKey && distanceToPlayer.magnitude <= pickupDistance && Input.GetKeyDown(KeyCode.E))
+    if (Vector3.Distance(player.transform.position, this.transform.position) <= pickupDistance)
     {
       PickedUp();
       this.gameObject.SetActive(false);
@@ -34,7 +30,6 @@ public class MazeKey : MonoBehaviour
 
   public void RespawnKey()
   {
-    playerStats.DropKey();
     this.gameObject.SetActive(true);
   }
 
