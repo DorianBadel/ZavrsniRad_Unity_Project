@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Kôd pripada Sebastian-u Lague-u
 public class MapGenerator : MonoBehaviour
 {
 
