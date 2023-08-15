@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//I added this code to fix the rotation of the Fox model so that it would align with the ground.
 public class AlignToSurface : MonoBehaviour
 {
   void OnDrawGizmos()
